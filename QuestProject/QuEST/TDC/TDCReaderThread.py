@@ -22,6 +22,7 @@ class TDCReaderThread(Thread):
         self.tdc_reader=tdc_reader
         self.tdc_switch="True"
         self.tdc_reader.start_TDC()
+        #self.counter=0
         
     def run(self):
         self.start_reading()
@@ -30,10 +31,10 @@ class TDCReaderThread(Thread):
         while(self.tdc_switch=="True"):
             byte_data=self.tdc_reader.readline()
             string_data=byte_data.decode('utf-8')
-            macrotime=datetime.date.strftime(datetime.datetime.now(),'%m:%d_%H:%M:%S:%f')
-            data=macrotime+" "+string_data
+            #macrotime=datetime.date.strftime(datetime.datetime.now(),'%m:%d_%H:%M:%S:%f')
+            #data=macrotime+" "+string_data
             #print(data)
-            self.hash_queue.put(data)
+            self.hash_queue.put(string_data)
         self.tdc_reader.stop_TDC()
                         
     def stop_reading(self):

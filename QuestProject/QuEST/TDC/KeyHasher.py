@@ -23,7 +23,8 @@ class KeyHasher(Thread):
         self.send_ut=alldata.good_utsend
         self.hashed_key=alldata.key
         self.save_data=alldata.save_data
-        
+        self.counter=0
+        self.FORCESTOP=83
         
     def run(self):
         self.hasher()
@@ -31,14 +32,21 @@ class KeyHasher(Thread):
     def hasher(self):
         while(1):
             if(~self.hash_queue.empty()):
-                self.key, self.value=self.decompose(self.hash_queue.get())
-                self.data=self.key +" "+ str(self.value)
+                #self.key, self.value=self.decompose(self.hash_queue.get())
+                self.value=float(self.hash_queue.get())
+                if(self.value>0):
+                    self.counter=self.counter+1
+                elif(self.value==0):
+                    self.counter=0
+                 
+                
+                self.data=str(self.counter) +" "+ str(self.value)
                 self.ut.put(self.data)
                 self.save_data.put(self.data)
-                if(self.value>0):
+                if((self.value>0) and (self.value<self.FORCESTOP)):
                     self.goodut.put(self.data)
                     self.send_ut.put(self.data)
-                    temp_key={self.data:self.value}
+                    #temp_key={self.counter:,int(self.value)}
                     #self.hashed_key.append(temp_key)
                     
     def decompose(self,data_string):
