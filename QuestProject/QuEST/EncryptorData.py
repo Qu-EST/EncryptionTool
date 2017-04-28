@@ -36,4 +36,5 @@ class EncrptorData(object):
         self.key={"":0}
         self.messenger=""
         self.hasher=""
+        self.goodkey=""
         
