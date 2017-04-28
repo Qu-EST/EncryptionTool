@@ -28,12 +28,12 @@ class SaveFile(Thread):
         self.setDaemon("True")
         
     def run(self):
-        print("inside run of the save")
-        print(str(~(self.save_data.empty())))
+        #print("inside run of the save")
+        #print(str(~(self.save_data.empty())))
         while(str(self.save_data.empty())=="False"):
-            print("inside while")
+            #print("inside while")
             datatowrite=self.save_data.get()
-            print(datatowrite)
+            #print(datatowrite)
             self.datafile.write(datatowrite)
             
             self.datafile.write("\n")

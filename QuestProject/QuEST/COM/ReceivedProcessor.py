@@ -34,6 +34,7 @@ class ReceivedProcessor(Thread):
             if(~self.received.empty()):
                 bytedata=self.received.get()
                 data=bytedata.decode('utf-8')
+                print("Processing received data: "+data)
                 command=data.partition(" ")
                 if(command[0]=="goodut"):
                     pass
@@ -64,6 +65,7 @@ class ReceivedProcessor(Thread):
             
         
     def process_message(self,enc_message):
+        print("inside message processor! queueing to display: "+enc_message)
         self.message.put("Sender: " + enc_message) 
         
     def off(self):

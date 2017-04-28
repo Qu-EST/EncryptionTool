@@ -53,6 +53,7 @@ class SendFrame(Frame):
         
     def send(self):
         to_send=self.entry.get()
+        print("Sending: "+to_send)
         self.send_queue.put(to_send)
         self.messagequeue.put("ME: "+to_send)
         self.entry.delete(0,'end')

@@ -32,7 +32,7 @@ class TDCReaderThread(Thread):
             string_data=byte_data.decode('utf-8')
             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m:%d_%H:%M:%S:%f')
             data=macrotime+" "+string_data
-            print(data)
+            #print(data)
             self.hash_queue.put(data)
         self.tdc_reader.stop_TDC()
                         

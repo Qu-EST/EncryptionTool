@@ -35,6 +35,7 @@ class Sender_Thread(Thread):
             if (~self.tosend.empty()):
                 message=self.tosend.get()
                 #message=str(data)
+                print("Sending: "+message)
                 self.send_socket.send(message.encode('utf-8'))
             #self.lock.release()
                 

@@ -155,12 +155,16 @@ class ConnectButton(Button):
             self.con_type="client"
         self.encrypt_socket=My_TCP(ip=self.IP,port=5005,con_type=self.con_type).my_socket
         print("connected", self.encrypt_socket)
+        self.alldata.encrypt_socket=self.encrypt_socket
         self.receiver=Receiver_Thread(received=self.received_data,rcv_socket=self.encrypt_socket)
         self.receiver.start()
+        self.alldata.receiver=self.receiver
         self.receivedprocessor=ReceivedProcessor(self.alldata)
         self.receivedprocessor.start()
+        self.alldata.receivedprocessor=self.receivedprocessor
         self.sender=Sender_Thread(tosend=self.send_data,send_socket=self.encrypt_socket)
         self.sender.start()
+        self.alldata.sender=self.sender
         
         
         
