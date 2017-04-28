@@ -166,8 +166,8 @@ class ConnectButton(Button):
         self.sender=Sender_Thread(display_sent=self.alldata.displaysent,tosend=self.send_data,send_socket=self.encrypt_socket)
         self.sender.start()
         self.alldata.sender=self.sender
-        self.displayersent=TextPadWriter(self.console.sent_data, self.all_data.displaysent)
-        self.displayerreceived=TextPadWriter(self.console.received_data, self.all_data.displayreceived)
+        self.displayersent=TextPadWriter(self.console.sent_data, self.alldata.displaysent)
+        self.displayerreceived=TextPadWriter(self.console.received_data, self.alldata.displayreceived)
         self.displayersent.start()
         self.displayerreceived.start()
         
