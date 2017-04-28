@@ -33,7 +33,7 @@ class Receiver_Thread(Thread):
             pass
             #self.lock.acquire()
             data=self.rcv_socket.recv(1024)
-            print("Received: "+data)
+            print("Received: "+data.decode('utf-8'))
             self.received.put(data)
             #self.lock.release()
             #time.sleep(0.25)
