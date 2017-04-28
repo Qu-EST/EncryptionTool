@@ -25,6 +25,7 @@ class ReceivedProcessor(Thread):
         self.xor_switch="True"
         self.message=alldata.displaymessage
         self.processor_switch=1
+        self.counter=0
         
     def run(self):
         self.process()
@@ -58,10 +59,14 @@ class ReceivedProcessor(Thread):
         decom=decom[2].partition(" ")
         key2=decom[0]
         xor=int(decom[2].strip(" "))
-        if(self.key[key1]^self.key[key2]==xor):
+        if(self.alldata.key[key1]^self.alldata.key[key2]==xor):
             self.goodkey.append([key1,key2])
             send_data="goodut " + key1+ " "+ key2
             self.send_queue.put(send_data)
+            self.counter=self.counter+1
+            if(self.counter>10):
+                self.send_queue.put("stop")
+                
             
         
     def process_message(self,enc_message):

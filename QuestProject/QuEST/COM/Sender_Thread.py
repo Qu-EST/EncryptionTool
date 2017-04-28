@@ -14,7 +14,7 @@ class Sender_Thread(Thread):
     '''
     
 
-    def __init__(self,tosend=Queue(0),send_socket=socket,lock=Lock()):
+    def __init__(self,display_sent=Queue(0),tosend=Queue(0),send_socket=socket,lock=Lock()):
         '''
         Constructor
         '''
@@ -22,6 +22,7 @@ class Sender_Thread(Thread):
         self.send_socket=send_socket
         self.tosend=tosend
         self.lock=lock
+        self.display_sent=display_sent
         Thread.__init__(self)
         
     def run(self):
@@ -36,6 +37,7 @@ class Sender_Thread(Thread):
                 message=self.tosend.get()
                 #message=str(data)
                 print("Sending: "+message)
+                self.display_sent.put(message)
                 self.send_socket.send(message.encode('utf-8'))
             #self.lock.release()
                 

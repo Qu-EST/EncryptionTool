@@ -35,7 +35,7 @@ class SettingsFrame(Frame):
         self.comm_part=Label(self,text="Communication Setting",width=25)
         self.IP_input=UIWidgets.InputFrame(self,label_text="IP:")
         self.if_server=UIWidgets.CheckBoxFrame(self,label_text="Server")
-        self.connect=UIWidgets.ConnectButton(self,self.all_data)
+        self.connect=UIWidgets.ConnectButton(self,master.console,self.all_data)
         self.disconnect=UIWidgets.DisconnectButton(self,self.all_data)
         
         self.start_sending=UIWidgets.StartSendingButton(self,self.all_data)

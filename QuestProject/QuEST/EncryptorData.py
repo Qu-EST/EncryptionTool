@@ -24,6 +24,8 @@ class EncrptorData(object):
         self.hash_queue=Queue(0)    #hasher
         self.send_data=Queue(0)     #for tcp sending
         self.save_data=Queue(0)     #queue to save data
+        self.displaysent=Queue(0)
+        self.displayreceived=Queue(0)
         self.encrypt_socket=""      #our socket
         self.tdc_serial=""          #Serial object to read data
         self.tdc_reader=""          #thread to read the serial data
@@ -33,8 +35,9 @@ class EncrptorData(object):
         self.sendprocessor=""       #thread process the sending
         self.receivedprocessor=""   #thread to process the received data
         self.displaymessage=Queue(0) #to display message
-        self.key={"":0}
+        self.key={"0":0}
         self.messenger=""
         self.hasher=""
         self.goodkey=""
+        
         

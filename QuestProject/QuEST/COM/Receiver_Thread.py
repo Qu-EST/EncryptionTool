@@ -14,7 +14,7 @@ class Receiver_Thread(Thread):
     '''
     
 
-    def __init__(self,received=Queue(0),rcv_socket=socket,lock=Lock()):
+    def __init__(self,display_received=Queue(0),received=Queue(0),rcv_socket=socket,lock=Lock()):
         '''
         Constructor
         '''
@@ -22,6 +22,7 @@ class Receiver_Thread(Thread):
         self.received=received
         self.rcv_socket=rcv_socket
         self.lock=lock
+        self.display_received=display_received
         Thread.__init__(self)
         
     def run(self):
@@ -35,6 +36,7 @@ class Receiver_Thread(Thread):
             data=self.rcv_socket.recv(1024)
             print("Received: "+data.decode('utf-8'))
             self.received.put(data)
+            self.display_received.put(data)
             #self.lock.release()
             #time.sleep(0.25)
     

@@ -127,7 +127,7 @@ class StopButton(Button):
             
         
 class ConnectButton(Button):        
-    def __init__(self,master,all_data):
+    def __init__(self,master,console,all_data):
         Button.__init__(self,master,text="Connect",command=self.connect,width=12)
         self.ui=master
         self.alldata=all_data
@@ -137,6 +137,7 @@ class ConnectButton(Button):
         self.sender=all_data.sender
         self.receivedprocessor=all_data.receivedprocessor
         self.send_data=all_data.send_data
+        self.console=console
         
     def connect(self):
         self.disconnect=self.ui.disconnect
@@ -156,15 +157,19 @@ class ConnectButton(Button):
         self.encrypt_socket=My_TCP(ip=self.IP,port=5005,con_type=self.con_type).my_socket
         print("connected", self.encrypt_socket)
         self.alldata.encrypt_socket=self.encrypt_socket
-        self.receiver=Receiver_Thread(received=self.received_data,rcv_socket=self.encrypt_socket)
+        self.receiver=Receiver_Thread(display_received=self.alldata.displayreceived, received=self.received_data,rcv_socket=self.encrypt_socket)
         self.receiver.start()
         self.alldata.receiver=self.receiver
         self.receivedprocessor=ReceivedProcessor(self.alldata)
         self.receivedprocessor.start()
         self.alldata.receivedprocessor=self.receivedprocessor
-        self.sender=Sender_Thread(tosend=self.send_data,send_socket=self.encrypt_socket)
+        self.sender=Sender_Thread(display_sent=self.alldata.displaysent,tosend=self.send_data,send_socket=self.encrypt_socket)
         self.sender.start()
         self.alldata.sender=self.sender
+        self.displayersent=TextPadWriter(self.console.sent_data, self.all_data.displaysent)
+        self.displayerreceived=TextPadWriter(self.console.received_data, self.all_data.displayreceived)
+        self.displayersent.start()
+        self.displayerreceived.start()
         
         
         
