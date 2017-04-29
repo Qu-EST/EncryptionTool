@@ -36,7 +36,7 @@ class Receiver_Thread(Thread):
             bytedata=self.rcv_socket.recv(1024)
             stringdata=bytedata.decode('utf-8')
             print("Received: "+stringdata)
-            self.received.put(stringdata)
+            self.received.put(bytedata)
             self.display_received.put(stringdata)
             #self.lock.release()
             #time.sleep(0.25)
