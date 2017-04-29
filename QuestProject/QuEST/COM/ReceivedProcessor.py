@@ -42,6 +42,7 @@ class ReceivedProcessor(Thread):
                     pass
                     self.process_goodut(command[2])
                 elif(command[0]=="stop"):
+                    print("about to call the stop processor")
                     self.process_stop()
                 elif(command[0]=="XOR"):
                     print("inside XOR")

@@ -237,6 +237,7 @@ class StartSendingButton(Button):
         print("Communicating with the other lab")
         self.sendprocessor=SendProcessor(self.alldata)
         self.sendprocessor.start()
+        self.alldata.sendprocessor=self.sendprocessor
         
         
 class MessengerButton(Button):
