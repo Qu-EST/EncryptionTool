@@ -35,7 +35,7 @@ class SendProcessor(Thread):
     def send(self):
         while(self.switch=="True"):
             print("inside send")
-            if(~self.good_ut.emtpy()):
+            if(~self.good_ut.empty()):
                 self.key1,self.value1 = self.dividor(self.good_ut.get())
                 time.sleep(0.25)
                 if(~self.good_ut.emtpy()):
