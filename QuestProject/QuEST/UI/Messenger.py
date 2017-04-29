@@ -45,6 +45,7 @@ class SendFrame(Frame):
     
     def __init__(self,master,send_queue,messagequeue,alldata):
         Frame.__init__(self,master)
+        self.alldata=alldata
         self.send_queue=send_queue
         self.messagequeue=messagequeue
         self.entry=Entry(self,width=50)
@@ -54,7 +55,7 @@ class SendFrame(Frame):
         self.key_label.pack(side=LEFT)
         self.entry.pack(side=CENTER)
         self.sendbutton.pack(side=RIGHT)
-        self.alldata=alldata
+        
         
     def send(self):
         to_send=self.entry.get()
