@@ -18,6 +18,7 @@ from QuEST.UI.Messenger import Messenger
 from QuEST.COM.ReceivedProcessor import ReceivedProcessor
 from QuEST.COM.SendProcessor import SendProcessor
 from QuEST.TDC.KeyHasher import KeyHasher
+from QuEST.TDC.TestTimeProducer import TestTimeProducer
 class InputFrame(Frame):
     def __init__(self,master,label_text="label"):
         Frame.__init__(self, master,width=350,height=70)
@@ -54,13 +55,28 @@ class CheckBoxFrame(Frame):
         return self.value.get()
         
 class ChangeButton(Button):        
-    def __init__(self,master,all_data):
-        Button.__init__(self,master,text="Change",command=self.change,width=12)
+    def __init__(self,master,console, all_data):
+        Button.__init__(self,master,text="Unit Test",command=self.change,width=12)
+        #self.config(state=DISABLED)
         self.tdc_reader=all_data.tdc_reader
-        self.config(state=DISABLED)
+        self.console=console
+        self.all_data=all_data
+        self.hash_queue=all_data.hash_queue
+        
+        
     def change(self):
         pass
-        print("Changed clicked")
+        print("Starting Unit Text")
+        self.time_producer=TestTimeProducer(self.hash_queue)
+        self.time_producer.start()
+        self.hasher=KeyHasher(self.all_data)
+        self.hasher.start()
+        self.all_data.hasher=self.hasher
+        self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
+        self.displaygoodut=TextPadWriter(self.console.good_utime, self.all_data.good_ut)
+        self.display_ut.start() #start putting the data in the textpad
+        self.displaygoodut.start()
+        
         
 class StartButton(Button):        
     def __init__(self, master, console, all_data):
@@ -91,8 +107,8 @@ class StartButton(Button):
             self.hasher=KeyHasher(self.all_data)
             self.hasher.start()
             self.all_data.hasher=self.hasher
-            print("from start printing the type of tdc reader " + str(type(self.tdc_reader)))
-            print(type(self.all_data.tdc_reader))
+            #print("from start printing the type of tdc reader " + str(type(self.tdc_reader)))
+            #print(type(self.all_data.tdc_reader))
             self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
             self.displaygoodut=TextPadWriter(self.console.good_utime, self.all_data.good_ut)
             self.display_ut.start() #start putting the data in the textpad
@@ -267,9 +283,9 @@ class TextPadWriter(Thread):
         while(1):
             if(~self.data_queue.empty()):
                 data=self.data_queue.get()
-                self.text_pad.insert(END,data)
-                self.text_pad.insert(END,"\n")
+                self.text_pad.insert(END,(data+"\n"))
+                #self.text_pad.insert(END,"\n")
                 self.text_pad.see(END)
-                self.data_queue.task_done() 
+                #self.data_queue.task_done() 
                 
                         

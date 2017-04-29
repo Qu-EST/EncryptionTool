@@ -16,7 +16,7 @@ class SettingsFrame(Frame):
         print("port_type")
         print(type(self.port_input))
         self.baud_input=UIWidgets.InputFrame(self,label_text="Baud rate")
-        self.change_button=UIWidgets.ChangeButton(self,self.all_data)
+        self.change_button=UIWidgets.ChangeButton(self,master.console,self.all_data)
         self.start_button=UIWidgets.StartButton(self,master.console,self.all_data)
         self.saver=UIWidgets.SaveButton(self,self.all_data)
         self.stop_button=UIWidgets.StopButton(self,self.all_data)
