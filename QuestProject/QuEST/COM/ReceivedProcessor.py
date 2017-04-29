@@ -104,6 +104,6 @@ class ReceivedProcessor(Thread):
         
     def set_keylabel(self):
         if(self.alldata.messenger!=""):
-            self.messenger.setkey()          
+            self.alldata.messenger.setkey()          
         
         
