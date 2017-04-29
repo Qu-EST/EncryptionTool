@@ -4,7 +4,7 @@ Created on Apr 21, 2017
 @author: jee11
 '''
 from tkinter import Tk, Text, Frame, Entry, Button, Label
-from tkinter.constants import TOP, LEFT, RIGHT, END, BOTTOM, DISABLED, CENTER
+from tkinter.constants import TOP, LEFT, RIGHT, END, BOTTOM, DISABLED, CENTER, W
 from QuEST.UI import UIWidgets
 from threading import Thread, Lock
 from queue import Queue
@@ -52,9 +52,9 @@ class SendFrame(Frame):
         self.sendbutton=Button(self,command=self.send,text="Send",width=12)
         self.key_label=Label(self)
         self.setkeylabel()
-        self.key_label.pack(side=LEFT)
-        self.entry.pack(side=CENTER)
-        self.sendbutton.pack(side=RIGHT)
+        self.key_label.grid(row=0,column=0,sticky=W)
+        self.entry.grid(row=0,column=1,sticky=W)
+        self.sendbutton.grid(row=0,column=2,sticky=W)
         
         
     def send(self):
