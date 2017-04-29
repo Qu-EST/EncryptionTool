@@ -35,7 +35,7 @@ class InputFrame(Frame):
         if (data==''):
             if(self.label_text=="Port No"):
                 #print("default port COM3 chosen")
-                data="COM3"
+                data="COM6"
                 return data
             elif (self.label_text=="Baud rate"):
                 #print("default baud rate 38400 chosen")
