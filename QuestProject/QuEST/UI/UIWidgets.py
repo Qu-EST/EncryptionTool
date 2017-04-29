@@ -283,7 +283,7 @@ class TextPadWriter(Thread):
         while(1):
             if(~self.data_queue.empty()):
                 data=self.data_queue.get()
-                self.text_pad.insert(END,(data+ b'\n'))
+                self.text_pad.insert(END,(data+ '\n'))
                 #self.text_pad.insert(END,"\n")
                 self.text_pad.see(END)
                 #self.data_queue.task_done() 
