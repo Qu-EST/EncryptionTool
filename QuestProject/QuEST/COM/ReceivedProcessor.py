@@ -52,7 +52,12 @@ class ReceivedProcessor(Thread):
     
     def process_goodut(self, mygooduts):
         decom=mygooduts.partition(" ")
-        self.goodkey.append([decom[0],decom[2]])
+        if(self.alldata.goodkey==""):
+            self.alldata.goodkey=(decom[0],decom[2])
+        else:
+            tempgoodkey=(decom[0],decom[2])
+            self.alldata.goodkey=self.alldata.goodkey+tempgoodkey
+        
     def process_stop(self):
         self.xor_switch="False"
         self.alldata.sendprocessor.off()

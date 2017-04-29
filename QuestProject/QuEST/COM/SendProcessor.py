@@ -52,6 +52,7 @@ class SendProcessor(Thread):
         return key, value
     
     def off(self):
+        print("stoping the send processor")
         self.swich="False"
             
         
