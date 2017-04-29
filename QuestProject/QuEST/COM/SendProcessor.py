@@ -22,7 +22,7 @@ class SendProcessor(Thread):
         self.send_queue=alldata.send_data
         #self.lock=lock
         #self.key1, self.key2, self.send_data=""
-        self.value1, self.value2, self.xor = 0
+        #self.value1, self.value2, self.xor = 0
         self.switch="True"
         
         
