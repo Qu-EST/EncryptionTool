@@ -38,7 +38,7 @@ class SendProcessor(Thread):
             if(~self.good_ut.empty()):
                 self.key1,self.value1 = self.dividor(self.good_ut.get())
                 time.sleep(0.25)
-                if(~self.good_ut.emtpy()):
+                if(~self.good_ut.empty()):
                     self.key2,self.value2 = self.dividor(self.good_ut.get())
                     self.xor=self.value1^self.value2
                     self.send_data="XOR " + self.key1 + " " + self.key2 + " " + str(self.xor)
