@@ -23,7 +23,7 @@ class SendProcessor(Thread):
         #self.lock=lock
         #self.key1, self.key2, self.send_data=""
         #self.value1, self.value2, self.xor = 0
-        self.switch="True"
+        self.switch=1
         
         
         
@@ -33,8 +33,8 @@ class SendProcessor(Thread):
         self.send()
         
     def send(self):
-        while(self.switch=="True"):
-            print("inside send")
+        while(self.switch):
+            #print("inside send processor "+str(self.sw))
             if(~self.good_ut.empty()):
                 self.key1,self.value1 = self.dividor(self.good_ut.get())
                 time.sleep(0.25)
@@ -53,6 +53,6 @@ class SendProcessor(Thread):
     
     def off(self):
         print("stoping the send processor")
-        self.swich="False"
+        self.switch=0
             
         
