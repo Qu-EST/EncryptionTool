@@ -52,7 +52,7 @@ class SendFrame(Frame):
         self.sendbutton=Button(self,command=self.send,text="Send",width=12)
         self.key_label=Label(self)
         self.setkeylabel()
-        self.key_label.grid(row=0,column=0,sticky=W)
+        #self.key_label.grid(row=0,column=0,sticky=W)
         self.entry.grid(row=0,column=1,sticky=W)
         self.sendbutton.grid(row=0,column=2,sticky=W)
         
@@ -67,10 +67,12 @@ class SendFrame(Frame):
     def setkeylabel(self):
         if(self.alldata.encrypt_key==""):
             self.key_label.config(text="no encryption")
+            self.key_label.grid(row=0,column=0,sticky=W)
             #return "no encryption"
         else:
             text="encryption key: "+self.alldata.encrypt_key.decode('utf-8')
             self.key_label.config(text=text)
+            self.key_label.grid(row=0,column=0,sticky=W)
             #return text
         
         
