@@ -48,7 +48,7 @@ class SendProcessor(Thread):
     def dividor(self,data):
         key_value=data.partition(" ")
         key=key_value[0]
-        value=int(key_value[2])
+        value=int(float(key_value[2]))
         return key, value
     
     def off(self):
