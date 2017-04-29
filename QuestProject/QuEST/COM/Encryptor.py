@@ -1,0 +1,29 @@
+'''
+Created on Apr 29, 2017
+
+@author: jee11
+'''
+
+import pyaes
+
+class Encryptor(object):
+    '''
+    classdocs
+    '''
+
+
+    def __init__(self, key):
+        '''
+        Constructor
+        '''
+        self.key=key.encode('utf-8')
+        encoder=pyaes.AESModeOfOperationCTR(self.key)
+        decoder=pyaes.AESModeOfOperationCTR(self.key)
+        
+    def encode(self,string):
+        return self.encoder.encode(string)
+    
+    def decode(self,bytedata):
+        return self.decoder.decode(bytedata).decode('utf-8')
+    
+        

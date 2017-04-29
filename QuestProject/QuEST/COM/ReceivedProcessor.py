@@ -5,6 +5,7 @@ Created on Apr 21, 2017
 '''
 from threading import Thread, Lock
 from queue import Queue
+from QuEST.COM.encryptor import Encryptor
 
 class ReceivedProcessor(Thread):
     '''
@@ -35,21 +36,26 @@ class ReceivedProcessor(Thread):
         while(self.processor_switch):
             if(~self.received.empty()):
                 bytedata=self.received.get()
-                data=bytedata.decode('utf-8')
-                print("Processing received data: "+data)
-                command=data.partition(" ")
-                if(command[0]=="goodut"):
+                if(self.alldata.encrypt_key==""):                
+                    data=bytedata.decode('utf-8')
+                    print("Processing received data: "+data)
+                    command=data.partition(" ")
+                    if(command[0]=="goodut"):
+                        pass
+                        self.process_goodut(command[2])
+                    elif(command[0]=="stop"):
+                        print("about to call the stop processor")
+                        self.process_stop()
+                    elif(command[0]=="XOR"):
+                        print("inside XOR")
+                        if(self.xor_switch=="True"):
+                            self.process_CRC(command[2])
+                    elif(command[0]=="message"):
+                        self.process_message(command[2])
+                else:
                     pass
-                    self.process_goodut(command[2])
-                elif(command[0]=="stop"):
-                    print("about to call the stop processor")
-                    self.process_stop()
-                elif(command[0]=="XOR"):
-                    print("inside XOR")
-                    if(self.xor_switch=="True"):
-                        self.process_CRC(command[2])
-                elif(command[0]=="message"):
-                    self.process_message(command[2])
+                    displaymessage=self.alldata.encryptor.decode(bytedata)
+                    self.process_message(displaymessage)
     
     def process_goodut(self, mygooduts):
         decom=mygooduts.partition(" ")
@@ -64,6 +70,8 @@ class ReceivedProcessor(Thread):
         self.alldata.sendprocessor.off()
         self.set_encryptkey()
         self.set_keylabel()
+        self.encryptor=Encryptor(self.alldata.encrypt_key)
+        self.alldata.ecryptor=self.encryptor
     def process_CRC(self,mycrcdata):
         decom=mycrcdata.partition(" ")
         key1=decom[0]
@@ -86,13 +94,18 @@ class ReceivedProcessor(Thread):
                 self.xor_switch="False"
                 self.set_encryptkey()
                 self.set_keylabel()
+                self.encryptor=Encryptor(self.alldata.encrypt_key)
+                self.alldata.ecryptor=self.encryptor
                 
             
         
     def process_message(self,enc_message):
         print("inside message processor! queueing to display: "+enc_message)
-        self.message.put("Sender: " + enc_message) 
-        
+        if(self.alldata.encrypt_key==""):
+            self.message.put("Sender: " + enc_message) 
+        else:
+            pass
+            
     def off(self):
         self.processor_switch=0
         

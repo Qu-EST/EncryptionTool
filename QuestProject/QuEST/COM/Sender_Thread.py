@@ -14,10 +14,11 @@ class Sender_Thread(Thread):
     '''
     
 
-    def __init__(self,display_sent=Queue(0),tosend=Queue(0),send_socket=socket,lock=Lock()):
+    def __init__(self,alldata,display_sent=Queue(0),tosend=Queue(0),send_socket=socket,lock=Lock()):
         '''
         Constructor
         '''
+        self.alldata=alldata
         self.sender_switch="True"
         self.send_socket=send_socket
         self.tosend=tosend
@@ -36,9 +37,12 @@ class Sender_Thread(Thread):
             if (~self.tosend.empty()):
                 message=self.tosend.get()
                 #message=str(data)
-                print("Sending: "+message)
+                #print("Sending: "+message)
                 self.display_sent.put(message)
-                self.send_socket.send(message.encode('utf-8'))
+                if(self.alldata.encrypt_key==""):
+                    self.send_socket.send(message.encode('utf-8'))
+                else:
+                    self.send_socket.send(message)
             #self.lock.release()
                 
     def off(self):

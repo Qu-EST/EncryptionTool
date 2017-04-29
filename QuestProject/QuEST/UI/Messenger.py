@@ -60,7 +60,13 @@ class SendFrame(Frame):
     def send(self):
         to_send=self.entry.get()
         print("Sending: "+to_send)
-        self.send_queue.put("message "+to_send)
+        if(self.alldata.encrypt_key==""):
+            self.send_queue.put("message "+to_send)
+        else:
+            encrypted_data=self.alldata.encryptor.encode(to_send)
+            self.send_queue.put(encrypted_data)
+            
+        
         self.messagequeue.put("ME: "+to_send)
         self.entry.delete(0,'end')
         

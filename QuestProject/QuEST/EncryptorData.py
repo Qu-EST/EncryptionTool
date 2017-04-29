@@ -40,5 +40,6 @@ class EncrptorData(object):
         self.hasher=""
         self.goodkey=""
         self.encrypt_key=""
+        self.encryptor=""
         
         
