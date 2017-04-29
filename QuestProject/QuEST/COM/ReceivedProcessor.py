@@ -25,7 +25,7 @@ class ReceivedProcessor(Thread):
         self.xor_switch="True"
         self.message=alldata.displaymessage
         self.processor_switch=1
-        self.counter=0
+        #self.counter=0
         self.alldata=alldata
         
     def run(self):
@@ -62,6 +62,7 @@ class ReceivedProcessor(Thread):
     def process_stop(self):
         self.xor_switch="False"
         self.alldata.sendprocessor.off()
+        self.set_encryptkey()
     def process_CRC(self,mycrcdata):
         decom=mycrcdata.partition(" ")
         key1=decom[0]
@@ -78,10 +79,11 @@ class ReceivedProcessor(Thread):
                 self.alldata.goodkey=self.alldata.goodkey+tempgoodkey
             send_data="goodut " + key1+ " "+ key2
             self.send_queue.put(send_data)
-            self.counter=self.counter+1
-            if(self.counter>10):
+            #self.counter=self.counter+1
+            if(self.alldata.goodkey.len()==8):
                 self.send_queue.put("stop")
                 self.xor_switch="False"
+                self.set_encryptkey()
                 
             
         
@@ -90,6 +92,12 @@ class ReceivedProcessor(Thread):
         self.message.put("Sender: " + enc_message) 
         
     def off(self):
-        self.processor_switch=0          
+        self.processor_switch=0
+        
+    def set_encryptkey(self):
+        temp_key=""
+        for key in self.alldata.goodkey:
+            temp_key=temp_key+key
+        self.alldata.encrypt_key=temp_key.encode('utf-8')          
         
         

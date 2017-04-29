@@ -39,5 +39,6 @@ class EncrptorData(object):
         self.messenger=""
         self.hasher=""
         self.goodkey=""
+        self.encrypt_key=""
         
         
