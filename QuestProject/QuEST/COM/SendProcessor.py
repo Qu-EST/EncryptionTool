@@ -21,7 +21,7 @@ class SendProcessor(Thread):
         self.good_ut=alldata.good_utsend
         self.send_queue=alldata.send_data
         #self.lock=lock
-        self.key1, self.key2, self.send_data=""
+        #self.key1, self.key2, self.send_data=""
         self.value1, self.value2, self.xor = 0
         self.switch="True"
         
