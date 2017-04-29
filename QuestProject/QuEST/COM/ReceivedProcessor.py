@@ -99,7 +99,7 @@ class ReceivedProcessor(Thread):
     def set_encryptkey(self):
         temp_key=""
         for key in self.alldata.goodkey:
-            temp_key=temp_key+key
+            temp_key=temp_key+self.alldata.key[key]
         self.alldata.encrypt_key=temp_key.encode('utf-8')
         
     def set_keylabel(self):
