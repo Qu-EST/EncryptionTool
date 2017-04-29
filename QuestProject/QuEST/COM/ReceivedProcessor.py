@@ -43,6 +43,7 @@ class ReceivedProcessor(Thread):
                 elif(command[0]=="stop"):
                     self.process_stop()
                 elif(command[0]=="XOR"):
+                    print("inside XOR")
                     if(self.xor_switch=="true"):
                         self.process_CRC(command[2])
                 elif(command[0]=="message"):
@@ -59,6 +60,8 @@ class ReceivedProcessor(Thread):
         decom=decom[2].partition(" ")
         key2=decom[0]
         xor=int(decom[2].strip(" "))
+        print("printing the decoded xor: "+key1+key2+str(xor))
+        print("printing the xored value in this machine: "+self.alldata.key[key1]^self.alldata.key[key2])
         if(self.alldata.key[key1]^self.alldata.key[key2]==xor):
             self.goodkey.append([key1,key2])
             send_data="goodut " + key1+ " "+ key2
