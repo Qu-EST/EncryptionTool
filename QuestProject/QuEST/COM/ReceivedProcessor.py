@@ -26,6 +26,7 @@ class ReceivedProcessor(Thread):
         self.message=alldata.displaymessage
         self.processor_switch=1
         self.counter=0
+        self.alldata=alldata
         
     def run(self):
         self.process()
@@ -44,7 +45,7 @@ class ReceivedProcessor(Thread):
                     self.process_stop()
                 elif(command[0]=="XOR"):
                     print("inside XOR")
-                    if(self.xor_switch=="true"):
+                    if(self.xor_switch=="True"):
                         self.process_CRC(command[2])
                 elif(command[0]=="message"):
                     self.process_message(command[2])
@@ -61,9 +62,13 @@ class ReceivedProcessor(Thread):
         key2=decom[0]
         xor=int(decom[2].strip(" "))
         print("printing the decoded xor: "+key1+key2+str(xor))
-        print("printing the xored value in this machine: "+self.alldata.key[key1]^self.alldata.key[key2])
+        print("printing the xored value in this machine: "+str(self.alldata.key[key1]^self.alldata.key[key2]))
         if(self.alldata.key[key1]^self.alldata.key[key2]==xor):
-            self.goodkey.append([key1,key2])
+            if(self.alldata.goodkey==""):
+                self.alldata.goodkey=(key1,key2)
+            else:
+                tempgoodkey=(key1,key2)
+                self.alldata.goodkey=self.alldata.goodkey+tempgoodkey
             send_data="goodut " + key1+ " "+ key2
             self.send_queue.put(send_data)
             self.counter=self.counter+1

@@ -47,7 +47,7 @@ class KeyHasher(Thread):
                 if((self.value>0) and (self.value<self.FORCESTOP)):
                     self.goodut.put(self.data)
                     self.send_ut.put(self.data)
-                    temp_key={self.counter:int(self.value)}
+                    temp_key={str(self.counter):int(self.value)}
                     self.alldata.key.update(temp_key)
                     
     def decompose(self,data_string):
