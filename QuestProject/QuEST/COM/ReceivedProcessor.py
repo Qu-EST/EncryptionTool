@@ -55,6 +55,7 @@ class ReceivedProcessor(Thread):
         self.goodkey.append([decom[0],decom[2]])
     def process_stop(self):
         self.xor_switch="False"
+        self.alldata.sendprocessor.off()
     def process_CRC(self,mycrcdata):
         decom=mycrcdata.partition(" ")
         key1=decom[0]
@@ -74,6 +75,7 @@ class ReceivedProcessor(Thread):
             self.counter=self.counter+1
             if(self.counter>10):
                 self.send_queue.put("stop")
+                self.xor_switch="False"
                 
             
         
