@@ -250,6 +250,7 @@ class MessengerButton(Button):
         pass
         print("Starting the messenger")
         self.messenger=Messenger(self.alldata)
+        self.alldata.messenger=self.messenger
         self.messenger.mainloop()
 class SaveButton(Button):
     def __init__(self,master, alldata):

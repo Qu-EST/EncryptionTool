@@ -3,8 +3,8 @@ Created on Apr 21, 2017
 
 @author: jee11
 '''
-from tkinter import Tk, Text, Frame, Entry, Button
-from tkinter.constants import TOP, LEFT, RIGHT, END, BOTTOM, DISABLED
+from tkinter import Tk, Text, Frame, Entry, Button, Label
+from tkinter.constants import TOP, LEFT, RIGHT, END, BOTTOM, DISABLED, CENTER
 from QuEST.UI import UIWidgets
 from threading import Thread, Lock
 from queue import Queue
@@ -27,13 +27,14 @@ class Messenger(Tk):
         #self.messagepad.config(state=DISABLED)
         self.messagepad.pack(side=TOP)
         self.displaymessage=alldata.displaymessage
-        self.sendframe=SendFrame(self,self.send_queue,self.displaymessage)
+        self.sendframe=SendFrame(self,self.send_queue,self.displaymessage,alldata)
         self.sendframe.pack(side=BOTTOM)
         self.display=DisplayThread(self.messagepad,self.displaymessage)
         self.display.start()
         
         
-        
+    def setkey(self):
+        self.sendframe.setkeylabel()    
     
         
         
@@ -42,14 +43,18 @@ class Messenger(Tk):
         
 class SendFrame(Frame):
     
-    def __init__(self,master,send_queue,messagequeue):
+    def __init__(self,master,send_queue,messagequeue,alldata):
         Frame.__init__(self,master)
         self.send_queue=send_queue
         self.messagequeue=messagequeue
         self.entry=Entry(self,width=50)
         self.sendbutton=Button(self,command=self.send,text="Send",width=12)
-        self.entry.pack(side=LEFT)
+        self.key_label=Label(self)
+        self.setkeylabel()
+        self.key_label.pack(side=LEFT)
+        self.entry.pack(side=CENTER)
         self.sendbutton.pack(side=RIGHT)
+        self.alldata=alldata
         
     def send(self):
         to_send=self.entry.get()
@@ -57,6 +62,15 @@ class SendFrame(Frame):
         self.send_queue.put("message "+to_send)
         self.messagequeue.put("ME: "+to_send)
         self.entry.delete(0,'end')
+        
+    def setkeylabel(self):
+        if(self.alldata.encrypt_key==""):
+            self.key_label.set("no encryption")
+            #return "no encryption"
+        else:
+            text="encryption key: "+self.alldata.encrypt_key.decode('utf-8')
+            self.key_label.set(text)
+            #return text
         
         
 class DisplayThread(Thread):
