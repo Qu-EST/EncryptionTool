@@ -39,9 +39,10 @@ class Sender_Thread(Thread):
                 #message=str(data)
                 #print("Sending: "+message)
                 self.display_sent.put(message)
-                if(self.alldata.encrypt_key==""):
+                if(type(message)==type("")):
                     self.send_socket.send(message.encode('utf-8'))
                 else:
+                    print(message)
                     self.send_socket.send(message)
             #self.lock.release()
                 
