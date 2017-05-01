@@ -16,9 +16,9 @@ class Encryptor(object):
         '''
         Constructor
         '''
-        self.key=key.encode('utf-8')
-        encoder=pyaes.AESModeOfOperationCTR(self.key)
-        decoder=pyaes.AESModeOfOperationCTR(self.key)
+        self.key=key
+        self.encoder=pyaes.AESModeOfOperationCTR(self.key)
+        self.decoder=pyaes.AESModeOfOperationCTR(self.key)
         
     def encode(self,string):
         return self.encoder.encode(string)

@@ -5,7 +5,7 @@ Created on Apr 21, 2017
 '''
 from threading import Thread, Lock
 from queue import Queue
-from QuEST.COM.encryptor import Encryptor
+from QuEST.COM.Encryptor import Encryptor
 
 class ReceivedProcessor(Thread):
     '''
