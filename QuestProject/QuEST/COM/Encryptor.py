@@ -24,6 +24,11 @@ class Encryptor(object):
         return self.encoder.encrypt(string)
     
     def decode(self,bytedata):
-        return self.decoder.decrypt(bytedata).decode('utf-8')
-    
+        
+        try:
+            return self.decoder.decrypt(bytedata).decode('utf-8')
+        except:
+            pass
+        finally:
+            return ""
         
