@@ -71,7 +71,7 @@ class ReceivedProcessor(Thread):
         self.set_encryptkey()
         self.set_keylabel()
         self.encryptor=Encryptor(self.alldata.encrypt_key)
-        self.alldata.ecryptor=self.encryptor
+        self.alldata.encryptor=self.encryptor
     def process_CRC(self,mycrcdata):
         decom=mycrcdata.partition(" ")
         key1=decom[0]
