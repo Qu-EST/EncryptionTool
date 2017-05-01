@@ -291,7 +291,7 @@ class TextPadWriter(Thread):
                     pass
                 finally:
                     self.text_pad.insert(END,data)
-                    self.text_pad.insert('\n')
+                    self.text_pad.insert(END,'\n')
                 
                 #self.text_pad.insert(END,"\n")
                 self.text_pad.see(END)
