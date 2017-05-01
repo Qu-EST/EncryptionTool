@@ -34,7 +34,12 @@ class Receiver_Thread(Thread):
             pass
             #self.lock.acquire()
             bytedata=self.rcv_socket.recv(1024)
-            stringdata=bytedata.decode('utf-8')
+            try:
+                stringdata=bytedata.decode('utf-8')
+            except:
+                pass
+            finally:
+                stringdata=bytedata
             print("Received: "+stringdata)
             self.received.put(bytedata)
             self.display_received.put(stringdata)
