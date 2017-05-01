@@ -288,13 +288,14 @@ class TextPadWriter(Thread):
                 try:
                     self.text_pad.insert(END,(data+ '\n'))
                 except:
-                    pass
-                finally:
                     self.text_pad.insert(END,data)
                     self.text_pad.insert(END,'\n')
+                finally:
+                    pass
+                    self.text_pad.see(END)
                 
                 #self.text_pad.insert(END,"\n")
-                self.text_pad.see(END)
+                
                 #self.data_queue.task_done() 
                 
                         

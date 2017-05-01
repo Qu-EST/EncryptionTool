@@ -38,9 +38,10 @@ class Receiver_Thread(Thread):
                 stringdata=bytedata.decode('utf-8')
             except:
                 pass
-            finally:
                 stringdata=bytedata
-            print("Received: "+stringdata)
+            finally:
+                pass
+            #print("Received: "+stringdata)
             self.received.put(bytedata)
             self.display_received.put(stringdata)
             #self.lock.release()
