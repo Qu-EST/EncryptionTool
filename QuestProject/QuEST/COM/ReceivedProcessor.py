@@ -95,7 +95,8 @@ class ReceivedProcessor(Thread):
                 self.set_encryptkey()
                 self.set_keylabel()
                 self.encryptor=Encryptor(self.alldata.encrypt_key)
-                self.alldata.ecryptor=self.encryptor
+                #print(self.encryptor)
+                self.alldata.encryptor=self.encryptor
                 
             
         

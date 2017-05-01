@@ -21,9 +21,9 @@ class Encryptor(object):
         self.decoder=pyaes.AESModeOfOperationCTR(self.key)
         
     def encode(self,string):
-        return self.encoder.encode(string)
+        return self.encoder.encrypt(string)
     
     def decode(self,bytedata):
-        return self.decoder.decode(bytedata).decode('utf-8')
+        return self.decoder.decrypt(bytedata).decode('utf-8')
     
         
