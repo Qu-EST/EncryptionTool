@@ -104,7 +104,7 @@ class ReceivedProcessor(Thread):
                 send_data="goodut " + key1+ " "+ key2
                 self.send_queue.put(send_data)
                 #self.counter=self.counter+1
-                if(len(self.alldata.goodkey)==8):
+                if(len(self.alldata.goodkey)==2):
                     self.send_queue.put("stop")
                     self.xor_switch="False"
                     self.set_encryptkey()
