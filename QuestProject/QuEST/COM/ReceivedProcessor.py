@@ -28,8 +28,8 @@ class ReceivedProcessor(Thread):
         self.processor_switch=1
         #self.counter=0
         self.alldata=alldata
-        self.value1
-        self.value2
+        self.value1=0
+        self.value2=0
         
     def run(self):
         self.process()
