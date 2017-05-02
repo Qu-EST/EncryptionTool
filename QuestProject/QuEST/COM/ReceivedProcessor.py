@@ -104,7 +104,7 @@ class ReceivedProcessor(Thread):
         
     def process_message(self,enc_message):
         print("inside message processor! queueing to display: "+enc_message)
-        if(self.alldata.encrypt_key==""):
+        if(self.alldata.encrypt_key!=""):
             self.message.put("Sender: " + enc_message) 
         else:
             pass
