@@ -43,4 +43,7 @@ class Encryptor(object):
             return ""
     def decode(self, bytedata):
         print(bytedata)
-        return self.tfh.decrypt(bytedata)    
+        try:
+            return self.tfh.decrypt(bytedata)    
+        except:
+            return bytedata
