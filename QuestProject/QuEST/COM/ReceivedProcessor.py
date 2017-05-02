@@ -81,25 +81,33 @@ class ReceivedProcessor(Thread):
         key2=decom[0]
         xor=int(decom[2].strip(" "))
         print("printing the decoded xor: "+key1+key2+str(xor))
-        print("printing the xored value in this machine: "+str(self.alldata.key[key1]^self.alldata.key[key2]))
-        if(self.alldata.key[key1]^self.alldata.key[key2]==xor):
-            if(self.alldata.goodkey==""):
-                self.alldata.goodkey=(key1,key2)
-            else:
-                tempgoodkey=(key1,key2)
-                self.alldata.goodkey=self.alldata.goodkey+tempgoodkey
-            send_data="goodut " + key1+ " "+ key2
-            self.send_queue.put(send_data)
-            #self.counter=self.counter+1
-            if(len(self.alldata.goodkey)==8):
-                self.send_queue.put("stop")
-                self.xor_switch="False"
-                self.set_encryptkey()
-                self.set_keylabel()
-                self.encryptor=Encryptor(self.alldata.encrypt_key)
-                #print(self.encryptor)
-                self.alldata.encryptor=self.encryptor
-                
+        try:
+            value1=self.alldata.key[key1]
+            value2=self.alldata.key[key2]
+            self.keypresent="True"
+        except:
+            print("values not in dictionary")
+            self.keypresent="False"
+        if(self.keypresent):
+            print("printing the xored value in this machine: "+str(value1^value2))
+            if((value1^value2)==xor):
+                if(self.alldata.goodkey==""):
+                    self.alldata.goodkey=(key1,key2)
+                else:
+                    tempgoodkey=(key1,key2)
+                    self.alldata.goodkey=self.alldata.goodkey+tempgoodkey
+                send_data="goodut " + key1+ " "+ key2
+                self.send_queue.put(send_data)
+                #self.counter=self.counter+1
+                if(len(self.alldata.goodkey)==8):
+                    self.send_queue.put("stop")
+                    self.xor_switch="False"
+                    self.set_encryptkey()
+                    self.set_keylabel()
+                    self.encryptor=Encryptor(self.alldata.encrypt_key)
+                    #print(self.encryptor)
+                    self.alldata.encryptor=self.encryptor
+                    
             
         
     def process_message(self,enc_message):
