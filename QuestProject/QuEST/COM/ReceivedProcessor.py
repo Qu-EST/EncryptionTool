@@ -92,6 +92,9 @@ class ReceivedProcessor(Thread):
             self.keypresent="False"
         if(self.keypresent):
             print("printing the xored value in this machine: "+str(self.value1^self.value2))
+            print("inside xor_processor: printing the value1 and value2")
+            print(self.value1)
+            print(self.value2)
             if((self.value1^self.value2)==xor):
                 if(self.alldata.goodkey==""):
                     self.alldata.goodkey=(key1,key2)
@@ -124,8 +127,15 @@ class ReceivedProcessor(Thread):
         
     def set_encryptkey(self):
         temp_key=""
-        for key in self.alldata.goodkey:
-            temp_key=temp_key+str(self.alldata.key[key])
+        for gkey in self.alldata.goodkey:
+            try:
+                key_success="True"
+                keypart=self.alldata.key[gkey]
+            except:
+                print("Error unable to read the correct key form the key dictionary")
+                key_success="False"
+            if(key_success):
+                temp_key=temp_key+str(keypart)
         self.alldata.encrypt_key=temp_key.encode('utf-8')
         
     def set_keylabel(self):
