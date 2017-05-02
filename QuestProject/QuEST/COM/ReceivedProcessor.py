@@ -55,7 +55,9 @@ class ReceivedProcessor(Thread):
                 else:
                     pass
                     displaymessage=self.alldata.encryptor.decode(bytedata)
-                    self.process_message(displaymessage)
+                    print("decoded message")
+                    print(displaymessage)
+                    self.process_message(displaymessage.decode('utf-8'))
     
     def process_goodut(self, mygooduts):
         decom=mygooduts.partition(" ")

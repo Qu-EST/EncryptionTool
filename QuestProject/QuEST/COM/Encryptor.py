@@ -23,9 +23,9 @@ class Encryptor(object):
         self.tfh=Twofish(self.key)
         
     def encode(self,message):
-        padded='{message: <16}'.format(message)
+        padded=message.ljust(16)
         #return self.encoder.encrypt(string)
-        return self.tfh.encrypt(padded)
+        return self.tfh.encrypt(padded.encode('utf-8'))
     
     def decod(self,bytedata):
         '''code for the aes not used
@@ -42,5 +42,5 @@ class Encryptor(object):
         finally:
             return ""
     def decode(self, bytedata):
-        
+        print(bytedata)
         return self.tfh.decrypt(bytedata)    
