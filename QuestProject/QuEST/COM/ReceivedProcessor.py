@@ -128,14 +128,14 @@ class ReceivedProcessor(Thread):
     def set_encryptkey(self):
         temp_key=""
         for gkey in self.alldata.goodkey:
-            try:
-                key_success="True"
-                keypart=self.alldata.key[gkey]
-            except:
-                print("Error unable to read the correct key form the key dictionary")
-                key_success="False"
-            if(key_success):
-                temp_key=temp_key+str(keypart)
+            #try:
+            #    key_success="True"
+            keypart=self.alldata.key[gkey]
+            #except:
+            #    print("Error unable to read the correct key form the key dictionary")
+            #    key_success="False"
+            #if(key_success):
+            temp_key=temp_key+str(keypart)
         self.alldata.encrypt_key=temp_key.encode('utf-8')
         
     def set_keylabel(self):
