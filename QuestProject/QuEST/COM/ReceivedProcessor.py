@@ -28,6 +28,8 @@ class ReceivedProcessor(Thread):
         self.processor_switch=1
         #self.counter=0
         self.alldata=alldata
+        self.value1
+        self.value2
         
     def run(self):
         self.process()
@@ -82,15 +84,15 @@ class ReceivedProcessor(Thread):
         xor=int(decom[2].strip(" "))
         print("printing the decoded xor: "+key1+key2+str(xor))
         try:
-            value1=self.alldata.key[key1]
-            value2=self.alldata.key[key2]
+            self.value1=self.alldata.key[key1]
+            self.value2=self.alldata.key[key2]
             self.keypresent="True"
         except:
             print("values not in dictionary")
             self.keypresent="False"
         if(self.keypresent):
-            print("printing the xored value in this machine: "+str(value1^value2))
-            if((value1^value2)==xor):
+            print("printing the xored value in this machine: "+str(self.value1^self.value2))
+            if((self.value1^self.value2)==xor):
                 if(self.alldata.goodkey==""):
                     self.alldata.goodkey=(key1,key2)
                 else:
