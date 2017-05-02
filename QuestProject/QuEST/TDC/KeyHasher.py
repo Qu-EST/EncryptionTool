@@ -39,6 +39,7 @@ class KeyHasher(Thread):
                     self.counter=self.counter+1
                 elif(self.value==0):
                     self.counter=0
+                    self.alldata.key={0,0}
                  
                 
                 self.data=str(self.counter) +" "+ str(self.value)
