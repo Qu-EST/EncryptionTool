@@ -48,7 +48,7 @@ class KeyHasher(Thread):
                 self.save_data.put(self.data)
                 if((self.value>0) and (self.value<self.FORCESTOP)):
                     self.goodut.put(self.data)
-                    self.send_ut.put(self.data)
+                    self.alldata.good_utsend.put(self.data)
                     temp_key={str(self.counter):int(self.value)}
                     self.alldata.key.update(temp_key)
                     
