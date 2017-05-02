@@ -39,7 +39,7 @@ class InputFrame(Frame):
                 return data
             elif (self.label_text=="Baud rate"):
                 #print("default baud rate 38400 chosen")
-                data=38400
+                data=57600
                 return data
         else: return data
     
