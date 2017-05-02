@@ -40,7 +40,7 @@ class KeyHasher(Thread):
                 elif(self.value==0):
                     self.counter=0
                     self.alldata.key.clear()
-                    self.alldata.good_utsend.clear()
+                    self.alldata.good_utsend=Queue(0)
                  
                 
                 self.data=str(self.counter) +" "+ str(self.value)
