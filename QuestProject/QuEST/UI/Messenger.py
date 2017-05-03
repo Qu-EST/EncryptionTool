@@ -72,7 +72,7 @@ class SendFrame(Frame):
         
     def setkeylabel(self):
         if(self.alldata.encrypt_key==""):
-            self.key_label.config(text="no encryption")
+            self.key_label.config(text="7774")
             #self.key_label.grid(row=0,column=0,sticky=W)
             #return "no encryption"
         else:
