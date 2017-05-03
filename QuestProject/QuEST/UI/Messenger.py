@@ -9,6 +9,7 @@ from QuEST.UI import UIWidgets
 from threading import Thread, Lock
 from queue import Queue
 import time
+from QuEST.COM.Encryptor import Encryptor
 
 class Messenger(Tk):
     '''
@@ -55,6 +56,7 @@ class SendFrame(Frame):
         self.key_label.grid(row=0,column=0,sticky=W)
         self.entry.grid(row=0,column=1,sticky=W)
         self.sendbutton.grid(row=0,column=2,sticky=W)
+        self.alldata.encryptor=Encryptor(b'7774')
         
         
     def send(self):
