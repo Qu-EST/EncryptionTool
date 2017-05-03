@@ -39,7 +39,7 @@ class EncrptorData(object):
         self.messenger=""
         self.hasher=""
         self.goodkey=""
-        self.encrypt_key="7774"
+        self.encrypt_key=b'7774'
         self.encryptor=""
         
         
