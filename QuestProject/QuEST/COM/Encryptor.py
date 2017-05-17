@@ -18,8 +18,8 @@ class Encryptor(object):
         Constructor
         '''
         self.key=b'7774'
-        self.encoder=pyaes.AESModeOfOperationCTR(self.key)
-        self.decoder=pyaes.AESModeOfOperationCTR(self.key)
+        #self.encoder=pyaes.AESModeOfOperationCTR(self.key)
+        #self.decoder=pyaes.AESModeOfOperationCTR(self.key)
         self.tfh=Twofish(self.key)
         
     def encode(self,message):

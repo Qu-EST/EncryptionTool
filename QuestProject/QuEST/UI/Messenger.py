@@ -9,6 +9,7 @@ from QuEST.UI import UIWidgets
 from threading import Thread, Lock
 from queue import Queue
 import time
+from QuEST.COM.Encryptor import Encryptor
 
 class Messenger(Tk):
     '''
@@ -63,7 +64,11 @@ class SendFrame(Frame):
         if(self.alldata.encrypt_key==""):
             self.send_queue.put("message "+to_send)
         else:
-            encrypted_data=self.alldata.encryptor.encode(to_send)
+            try:
+                encrypted_data=self.alldata.encryptor.encode(to_send)
+            except LookupError:
+                self.alldata.encryptor=Encryptor(b'7774')
+                encrypted_data=self.alldata.encryptor.encode(to_send)
             self.send_queue.put(encrypted_data)
             
         
