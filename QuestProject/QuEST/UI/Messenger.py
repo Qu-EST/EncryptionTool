@@ -76,7 +76,11 @@ class SendFrame(Frame):
             #self.key_label.grid(row=0,column=0,sticky=W)
             #return "no encryption"
         else:
-            text="encryption key: "+self.alldata.encrypt_key.decode('utf-8')
+            try:
+                text="encryption key: "+self.alldata.encrypt_key.decode('utf-8')
+            except AttributeError: 
+                text="encryption key: "+self.alldata.encrypt_key
+                    
             self.key_label.config(text=text)
             #self.key_label.grid(row=0,column=0,sticky=W)
             #return text
