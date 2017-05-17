@@ -55,8 +55,11 @@ class ReceivedProcessor(Thread):
                     elif(command[0]=="message"):
                         self.process_message(command[2])
                 else:
-                    pass
-                    displaymessage=self.alldata.encryptor.decode(bytedata)
+                    try:                
+                        displaymessage=self.alldata.encryptor.decode(bytedata)
+                    except AttributeError:
+                        self.alldata.encryptor=Encryptor(b'7774')
+                        displaymessage=self.alldata.encryptor.decode(bytedata)
                     print("decoded message")
                     print(displaymessage)
                     self.process_message(displaymessage.decode('utf-8'))
