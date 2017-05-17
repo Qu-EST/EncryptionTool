@@ -5,6 +5,7 @@ Created on Apr 29, 2017
 '''
 
 import pyaes
+import math
 from twofish import Twofish
 
 class Encryptor(object):
@@ -23,7 +24,8 @@ class Encryptor(object):
         self.tfh=Twofish(self.key)
         
     def encode(self,message):
-        padded=message.ljust(16)
+        padlength=(math.ceil(len(message)/16))*16
+        padded=message.ljust(padlength)
         #return self.encoder.encrypt(string)
         return self.tfh.encrypt(padded.encode('utf-8'))
     
