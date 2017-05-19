@@ -69,7 +69,6 @@ class Encryptor(object):
         print(bytedata.count(b' '))
         
         for blocks in splitted:
-#<<<<<<< HEAD
             print("block")
             print(blocks)
             try:
@@ -78,10 +77,4 @@ class Encryptor(object):
                 print("ignored the below text because of error")
                 print(blocks)
             
-#=======
-            try:
-                message = message + self.tfh.decrypt(blocks)
-            except ValueError:
-                message = message +self.tfh.decrypt(splitted)
-#>>>>>>> 1581baa952fa46a9723cd65851ae8b5553d036bc
         return message
