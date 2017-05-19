@@ -24,10 +24,28 @@ class Encryptor(object):
         self.tfh=Twofish(self.key)
         
     def encode(self,message):
-        padlength=(math.ceil(len(message)/16))*16
-        padded=message.ljust(padlength)
-        #return self.encoder.encrypt(string)
-        return self.tfh.encrypt(padded.encode('utf-8'))
+        times=math.ceil(len(message)/16)
+        counter=1
+        enc=b''
+        while(times>0):
+            times=times-1        
+            block=message[((counter-1)*16):(counter*16)]
+            #print(len(block))
+            #print(block)
+            
+            try:
+                if(counter==1):
+                    enc = self.tfh.encrypt(block.encode())
+                    #print(enc)
+                else:    
+                    enc=enc + b' ' + self.tfh.encrypt(block.encode())
+                    #print(enc)
+            except ValueError:
+                block=block.ljust(16)
+                enc=enc + b' ' + self.tfh.encrypt(block.encode()) 
+                #print(enc)      
+            counter=counter+1
+        return enc
     
     def decod(self,bytedata):
         '''code for the aes not used
@@ -45,7 +63,8 @@ class Encryptor(object):
             return ""
     def decode(self, bytedata):
         print(bytedata)
-        try:
-            return self.tfh.decrypt(bytedata)    
-        except:
-            return bytedata
+        message=b''
+        splitted=bytedata.split(b' ')
+        for blocks in splitted:
+            message = message + self.tfh.decrypt(blocks)
+        return message
