@@ -66,5 +66,8 @@ class Encryptor(object):
         message=b''
         splitted=bytedata.split(b' ')
         for blocks in splitted:
-            message = message + self.tfh.decrypt(blocks)
+            try:
+                message = message + self.tfh.decrypt(blocks)
+            except ValueError:
+                message = message +self.tfh.decrypt(splitted)
         return message
