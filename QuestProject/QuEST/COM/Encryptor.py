@@ -65,9 +65,16 @@ class Encryptor(object):
         print(bytedata)
         message=b''
         splitted=bytedata.split(b' ')
+        print("printingn the number of space in the bytedata")
+        print(bytedata.count(b' '))
+        
         for blocks in splitted:
+            print("block")
+            print(blocks)
             try:
                 message = message + self.tfh.decrypt(blocks)
             except ValueError:
-                message = message +self.tfh.decrypt(bytedata)
+                print("ignored the below text because of error")
+                print(blocks)
+            
         return message
