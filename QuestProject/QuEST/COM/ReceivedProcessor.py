@@ -56,8 +56,10 @@ class ReceivedProcessor(Thread):
                     elif(command[0]=="message"):
                         self.process_message(command[2])
                 else:
-                    key=bytedata[:2]
-                    tfh=Twofish(key)
+                    index=bytedata[:2]
+                    print(index)
+                    print(self.alldata.key)
+                    tfh=Twofish(self.alldata.key[index])
                     try:                
                         displaymessage=self.alldata.encryptor.decode(bytedata[2:], tfh)
                     except AttributeError:
