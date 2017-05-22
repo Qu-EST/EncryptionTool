@@ -63,7 +63,8 @@ class SendFrame(Frame):
     def send(self):
         to_send=self.entry.get()
         print("Sending: "+to_send)
-        key=self.alldata.key[random.randrange(1,211,1)]
+        index=random.randrange(1,211,1)
+        key=self.alldata.key[index]
         self.alldata.encrypt_key=key
         self.setkeylabel()
         tfh=Twofish(key.encode())
@@ -75,7 +76,7 @@ class SendFrame(Frame):
             except LookupError:
                 self.alldata.encryptor=Encryptor(b'7774')
                 encrypted_data=self.alldata.encryptor.encode(to_send, tfh)
-            self.send_queue.put(key.encode() + b' ' + encrypted_data)
+            self.send_queue.put((str(index)).encode() + b' ' + encrypted_data)
             
         
         self.messagequeue.put("ME: "+to_send)
