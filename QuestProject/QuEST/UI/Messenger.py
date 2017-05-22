@@ -63,7 +63,7 @@ class SendFrame(Frame):
     def send(self):
         to_send=self.entry.get()
         print("Sending: "+to_send)
-        index=random.randrange(1,211,1)
+        index=random.randrange(1,100,1)
         key=self.alldata.key[index]
         self.alldata.encrypt_key=key
         self.setkeylabel()
