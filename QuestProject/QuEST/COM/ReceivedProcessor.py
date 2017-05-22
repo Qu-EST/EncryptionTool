@@ -56,10 +56,11 @@ class ReceivedProcessor(Thread):
                     elif(command[0]=="message"):
                         self.process_message(command[2])
                 else:
-                    index=bytedata[:2]
+                    index=int(bytedata[:2])
                     print(index)
                     print(self.alldata.key)
-                    tfh=Twofish(self.alldata.key[index])
+                    self.alldata.encrypt_key=self.alldata.key[index]
+                    tfh=Twofish((self.alldata.key[index]).encode())
                     try:                
                         displaymessage=self.alldata.encryptor.decode(bytedata[2:], tfh)
                     except AttributeError:
@@ -68,6 +69,7 @@ class ReceivedProcessor(Thread):
                     print("decoded message")
                     print(displaymessage)
                     self.process_message(displaymessage.decode('utf-8'))
+                    self.set_keylabel()
     
     def process_goodut(self, mygooduts):
         decom=mygooduts.partition(" ")
