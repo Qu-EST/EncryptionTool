@@ -56,15 +56,26 @@ class CheckBoxFrame(Frame):
         
 class ChangeButton(Button):        
     def __init__(self,master,console, all_data):
-        Button.__init__(self,master,text="Unit Test",command=self.change,width=12)
+        Button.__init__(self,master,text="Load key",command=self.loadkey,width=12)
         #self.config(state=DISABLED)
         self.tdc_reader=all_data.tdc_reader
         self.console=console
         self.all_data=all_data
         self.hash_queue=all_data.hash_queue
         
+    def loadkey(self):    
+        pass
+        keyfile=open("Quantum_Keys.txt",'r')
+        keylist=keyfile.readlines()
+        index=1
+        for keys in keylist:
+            #print(keys.rstrip('\n'))
+            tempkey={index:keys.rstrip('\n')}
+            self.all_data.key.update(tempkey)
+            index=index+1
+        print(self.all_data.key)
         
-    def change(self):
+    def unit_test(self):
         pass
         print("Starting Unit Text")
         self.time_producer=TestTimeProducer(self.hash_queue)
