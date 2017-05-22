@@ -71,7 +71,7 @@ class SendFrame(Frame):
             self.send_queue.put("message "+to_send)
         else:
             try:
-                encrypted_data=self.alldata.encryptor.encode(to_send)
+                encrypted_data=self.alldata.encryptor.encode(to_send,tfh)
             except LookupError:
                 self.alldata.encryptor=Encryptor(b'7774')
                 encrypted_data=self.alldata.encryptor.encode(to_send, tfh)
