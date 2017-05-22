@@ -6,6 +6,7 @@ Created on Apr 21, 2017
 from threading import Thread, Lock
 from queue import Queue
 from QuEST.COM.Encryptor import Encryptor
+from twofish import Twofish
 
 class ReceivedProcessor(Thread):
     '''
@@ -55,11 +56,13 @@ class ReceivedProcessor(Thread):
                     elif(command[0]=="message"):
                         self.process_message(command[2])
                 else:
+                    key=bytedata[:2]
+                    tfh=Twofish(key)
                     try:                
-                        displaymessage=self.alldata.encryptor.decode(bytedata)
+                        displaymessage=self.alldata.encryptor.decode(bytedata[2:], tfh)
                     except AttributeError:
                         self.alldata.encryptor=Encryptor(b'7774')
-                        displaymessage=self.alldata.encryptor.decode(bytedata)
+                        displaymessage=self.alldata.encryptor.decode(bytedata[2:], tfh)
                     print("decoded message")
                     print(displaymessage)
                     self.process_message(displaymessage.decode('utf-8'))

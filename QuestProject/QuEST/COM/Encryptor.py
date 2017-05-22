@@ -18,12 +18,13 @@ class Encryptor(object):
         '''
         Constructor
         '''
-        self.key=b'7774'
+        #self.key=key
         #self.encoder=pyaes.AESModeOfOperationCTR(self.key)
         #self.decoder=pyaes.AESModeOfOperationCTR(self.key)
-        self.tfh=Twofish(self.key)
+        #self.tfh=Twofish(key)
         
-    def encode(self,message):
+    def encode(self,message, tfh):
+        self.tfh=tfh
         times=math.ceil(len(message)/16)
         counter=1
         enc=b''
@@ -47,10 +48,10 @@ class Encryptor(object):
             counter=counter+1
         return enc
     
-    def decod(self,bytedata):
+    def decod(self,bytedata, tfh):
         '''code for the aes not used
         '''
-        
+        self.tfh=tfh
         try:
             print("inside decoder")
             print(bytedata)

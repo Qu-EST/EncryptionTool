@@ -10,7 +10,8 @@ from threading import Thread, Lock
 from queue import Queue
 import time
 from QuEST.COM.Encryptor import Encryptor
-
+from twofish import Twofish
+import random
 class Messenger(Tk):
     '''
     classdocs
@@ -61,6 +62,10 @@ class SendFrame(Frame):
     def send(self):
         to_send=self.entry.get()
         print("Sending: "+to_send)
+        key=self.alldata.key[random.randrange(1,211,1)]
+        self.alldata.encrypt_key=key
+        self.setkeylabel()
+        tfh=Twofish(key.encode())
         if(self.alldata.encrypt_key==""):
             self.send_queue.put("message "+to_send)
         else:
@@ -68,8 +73,8 @@ class SendFrame(Frame):
                 encrypted_data=self.alldata.encryptor.encode(to_send)
             except LookupError:
                 self.alldata.encryptor=Encryptor(b'7774')
-                encrypted_data=self.alldata.encryptor.encode(to_send)
-            self.send_queue.put(encrypted_data)
+                encrypted_data=self.alldata.encryptor.encode(to_send, tfh)
+            self.send_queue.put(key.encode() + b' ' + encrypted_data)
             
         
         self.messagequeue.put("ME: "+to_send)
