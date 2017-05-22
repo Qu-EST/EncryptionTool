@@ -62,7 +62,8 @@ class Encryptor(object):
             pass
         finally:
             return ""
-    def decode(self, bytedata):
+    def decode(self, bytedata, tfh):
+        self.tfh=tfh
         print(bytedata)
         message=b''
         splitted=bytedata.split(b' ')
