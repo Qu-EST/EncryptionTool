@@ -7,7 +7,7 @@ from tkinter import Frame, IntVar
 from tkinter import Label
 from tkinter import Entry
 from tkinter import *
-from threading import Thread
+from threading import Thread, Event
 from QuEST.TDC.TDCReader import TDCReader
 from QuEST.TDC.TDCReaderThread import TDCReaderThread
 from QuEST.COM.My_TCP import My_TCP
@@ -19,6 +19,7 @@ from QuEST.COM.ReceivedProcessor import ReceivedProcessor
 from QuEST.COM.SendProcessor import SendProcessor
 from QuEST.TDC.KeyHasher import KeyHasher
 from QuEST.TDC.TestTimeProducer import TestTimeProducer
+from queue import Empty
 class InputFrame(Frame):
     def __init__(self,master,label_text="label"):
         Frame.__init__(self, master,width=350,height=70)
@@ -203,8 +204,9 @@ class ConnectButton(Button):
 class DisconnectButton(Button):        
     def __init__(self,master,all_data):
         Button.__init__(self,master,text="Disconnect",command=self.disconnect,width=12)
+        self.alldata=all_data
         self.sockettoclose=all_data.encrypt_socket
-        self.sendprocessor=all_data.sendprocessor
+        #self.sendprocessor=all_data.sendprocessor
         self.receiver=all_data.receiver
         self.receivedprocessor=all_data.receivedprocessor
         self.sender=all_data.sender
@@ -285,17 +287,27 @@ class ConsoleFrame(Frame):
         
 class TextPadWriter(Thread):
     def __init__(self, text_pad, data_queue):
-        self.data_queue=data_queue
-        self.text_pad=text_pad.console
         Thread.__init__(self)
+        self.data_queue=data_queue
+        self.text_pad=text_pad.console        
         self.setDaemon(True)
+        self.switch=Event()
+        self.switch.set()
+        
     def run(self):
-        pass
-        self.display()
-    def display(self,):
-        while(1):
-            if(~self.data_queue.empty()):
-                data=self.data_queue.get()
+        self.display()        
+    
+    def display(self):
+        if(self.switch.is_set()): print("switch is set: before the while loop")
+        while(self.switch.is_set()):
+            #print(self.switch.is_set())
+            #if(self.switch.is_set()): print("switch is set: inside the while loop")
+            try:
+                data=self.data_queue.get(timeout=1)
+                self.data_queue.task_done()
+            except Empty: pass
+                #print("no data in queue")    
+            else:
                 try:
                     self.text_pad.insert(END,(data+ '\n'))
                 except:
@@ -305,8 +317,13 @@ class TextPadWriter(Thread):
                     pass
                     self.text_pad.see(END)
                 
-                #self.text_pad.insert(END,"\n")
-                
-                #self.data_queue.task_done() 
-                
+                 
+    def off(self):
+        print("inside the textpad writer off")
+        self.switch.clear()
+        self.switch.clear()
+        print(self.switch.is_set())
+        print("starting the wait to check if the switch is set to true")
+        self.switch.wait()
+        print("exited wait")            
                         
