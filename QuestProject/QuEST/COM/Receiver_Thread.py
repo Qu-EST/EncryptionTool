@@ -41,6 +41,7 @@ class Receiver_Thread(Thread):
             except timeout:
                 pass#print("socket timeout exception")
             else:
+                print(b'recieved: '+ bytedata)
                 try:
                     stringdata=bytedata.decode('utf-8')
                 except:

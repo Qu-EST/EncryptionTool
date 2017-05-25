@@ -43,9 +43,11 @@ class Sender_Thread(Thread):
                 self.display_sent.put(message)
                 if(type(message)==type("")):
                     self.send_socket.send(message.encode('utf-8'))
+                    print("sent: "+message)
                 else:
                     print(message)
                     self.send_socket.send(message)
+                    print(b'sent: '+message)
             #self.lock.release()
                 
     def off(self):
