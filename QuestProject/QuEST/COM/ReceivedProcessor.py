@@ -4,7 +4,7 @@ Created on Apr 21, 2017
 @author: jee11
 '''
 from threading import Thread, Lock
-from queue import Queue
+from queue import Queue, Empty
 from QuEST.COM.Encryptor import Encryptor
 from twofish import Twofish
 
@@ -37,8 +37,10 @@ class ReceivedProcessor(Thread):
         
     def process(self):
         while(self.processor_switch):
-            if(~self.received.empty()):
-                bytedata=self.received.get()
+            try:
+                bytedata=self.received.get(timeout=1)
+            except Empty: pass#print("queue timeout from receivevd processor")
+            else:
                 if(self.alldata.encrypt_key==""):                
                     data=bytedata.decode('utf-8')
                     print("Processing received data: "+data)

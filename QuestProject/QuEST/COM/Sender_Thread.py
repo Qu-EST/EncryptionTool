@@ -5,7 +5,7 @@ Created on Apr 1, 2017
 '''
 from threading import Thread
 from threading import Lock
-from queue import Queue
+from queue import Queue, Empty
 from _overlapped import NULL
 from _socket import socket
 class Sender_Thread(Thread):
@@ -34,10 +34,12 @@ class Sender_Thread(Thread):
         while(self.sender_switch=="True"):
             #self.lock.acquire()
             pass
-            if (~self.tosend.empty()):
-                message=self.tosend.get()
+            try:
+                message=self.tosend.get(timeout=1)
                 #message=str(data)
                 #print("Sending: "+message)
+            except Empty: pass#print("timeout from sender queue")
+            else:
                 self.display_sent.put(message)
                 if(type(message)==type("")):
                     self.send_socket.send(message.encode('utf-8'))

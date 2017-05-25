@@ -227,16 +227,28 @@ class DisconnectButton(Button):
         self.config(state=DISABLED)
         self.communicate.config(state=DISABLED)
         self.messenger_button.config(state=DISABLED)
-        if(self.messenger==""):
-            pass
-        else:
+        try:
             self.messenger.destroy()
-        self.sendprocessor.off()
-        self.receiver.off()
-        self.receivedprocessor.off()
-        self.sender.off()
+        except AttributeError:
+            pass
+        try:
+            self.alldata.sendprocessor.off()
+        except AttributeError:
+            print("no send processor present")
+        self.alldata.encrypt_socket.settimeout(1)
+        print("closing the receiver")
+        self.alldata.receiver.off()        
+        self.alldata.receiver.join()
+        print("receiver closed/n closing the received processor")
+        self.alldata.receivedprocessor.off()
+        self.alldata.receivedprocessor.join()
+        print("reciever processor closed/n closig the sender")
+        self.alldata.sender.off()
+        self.alldata.sender.join()
+        print("Sender closed\n closing the socket")
         
-        self.sockettoclose.close()
+        self.alldata.encrypt_socket.close()
+        print("socket closed")
         
         
 class StartSendingButton(Button):        
@@ -298,7 +310,7 @@ class TextPadWriter(Thread):
         self.display()        
     
     def display(self):
-        if(self.switch.is_set()): print("switch is set: before the while loop")
+        #if(self.switch.is_set()): print("switch is set: before the while loop")
         while(self.switch.is_set()):
             #print(self.switch.is_set())
             #if(self.switch.is_set()): print("switch is set: inside the while loop")
