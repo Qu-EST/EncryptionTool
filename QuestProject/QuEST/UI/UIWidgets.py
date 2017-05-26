@@ -67,7 +67,7 @@ class ChangeButton(Button):
         
     def loadkey(self):    
         pass
-        os.chdir(r'C:\Users\QuEST02\Documents\EncryptionTool\QuestProject\QuEST')
+        #os.chdir(r'C:\Users\QuEST02\Documents\EncryptionTool\QuestProject\QuEST')
         keyfile=open("Quantum_Keys.txt",'r')
         keylist=keyfile.readlines()
         index=1
@@ -230,7 +230,9 @@ class DisconnectButton(Button):
         self.communicate.config(state=DISABLED)
         self.messenger_button.config(state=DISABLED)
         try:
-            self.messenger.destroy()
+            print("Trying to close the Messenger")
+            self.alldata.messenger.destroy()
+            print("messenger closed")
         except AttributeError:
             pass 
             print("no messenger now to destroy")

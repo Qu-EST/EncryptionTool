@@ -15,6 +15,7 @@ from QuEST.TDC import TDCReaderThread
 import threading
 import time
 from QuEST.COM.SendProcessor import SendProcessor
+from QuEST.UI.Messenger import Messenger
 
 class EncryptionUI(Tk):
     '''
@@ -37,10 +38,10 @@ class EncryptionUI(Tk):
         self.protocol("WM_DELETE_WINDOW", self.on_exit)
         
     def on_exit(self):
-        if(isinstance(self.all_data.sendprocessor, SendProcessor)):
-            disconnect_thread = threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke)
-            disconnect_thread.start()
-            disconnect_thread.join()
+        try:
+            self.all_data.messenger.destroy()
+        except AttributeError:
+            print("no messenger to close")
         
         for threads in threading.enumerate():
             if(not((threads.name=='MainThread') or threads.isDaemon())):
@@ -52,6 +53,8 @@ class EncryptionUI(Tk):
                 threads.join()
                 print(threads.is_alive())        
         print(threading.active_count())
+        
+        self.all_data.encrypt_socket.close()
         self.destroy()
         time.sleep(2)
         print(threading.enumerate())  

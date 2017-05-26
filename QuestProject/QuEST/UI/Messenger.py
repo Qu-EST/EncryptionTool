@@ -33,6 +33,7 @@ class Messenger(Tk):
         self.sendframe.pack(side=BOTTOM)
         self.display=DisplayThread(self.messagepad,self.displaymessage)
         self.display.start()
+        #self.sendframe.bind("<Return>", lambda x: self.sendframe.send())
         
         
     def setkey(self):
@@ -57,7 +58,8 @@ class SendFrame(Frame):
         self.key_label.grid(row=0,column=0,sticky=W)
         self.entry.grid(row=0,column=1,sticky=W)
         self.sendbutton.grid(row=0,column=2,sticky=W)
-        self.bind("<Return>", lambda x: self.send())
+        self.entry.focus()
+        self.entry.bind("<Return>", lambda x: self.send())
         self.alldata.encryptor=Encryptor(b'7774')
         
         
@@ -105,6 +107,7 @@ class DisplayThread(Thread):
         Thread.__init__(self)
         self.messagequeue=messagequeue
         self.textpad=textpad
+        self.setDaemon('True')
         
     def run(self):
         self.display()
