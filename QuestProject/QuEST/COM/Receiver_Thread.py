@@ -7,18 +7,19 @@ from threading import Thread, Lock
 from queue import Queue
 from _overlapped import NULL
 from _socket import socket, timeout
-import time
+import time, threading
 class Receiver_Thread(Thread):
     '''
     classdocs
     '''
     
 
-    def __init__(self,display_received=Queue(0),received=Queue(0),rcv_socket=socket,lock=Lock()):
+    def __init__(self,alldata,display_received=Queue(0),received=Queue(0),rcv_socket=socket,lock=Lock()):
         '''
         Constructor
         '''
         self.switch="True"
+        self.alldata=alldata
         self.received=received
         self.rcv_socket=rcv_socket
         rcv_socket.settimeout(1)
@@ -27,8 +28,11 @@ class Receiver_Thread(Thread):
         Thread.__init__(self)
         
     def run(self):
-        pass
-        self.receive()
+        try:
+            self.receive()
+        except ConnectionResetError:
+            print("connection reset error, disconnecting")
+            threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
     
     def receive(self):
         while(self.switch=="True"):
@@ -40,6 +44,9 @@ class Receiver_Thread(Thread):
                 bytedata=self.rcv_socket.recv(1024)
             except timeout:
                 pass#print("socket timeout exception")
+            except ConnectionResetError:
+                print("connection reset error, disconnecting")
+                threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
             else:
                 print(b'recieved: '+ bytedata)
                 try:
