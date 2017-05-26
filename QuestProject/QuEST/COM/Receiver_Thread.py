@@ -28,12 +28,12 @@ class Receiver_Thread(Thread):
         Thread.__init__(self)
         
     def run(self):
-        try:
-            self.receive()
-        except ConnectionResetError:
-            print("connection reset error, disconnecting")
-            threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
-    
+#         try:
+        self.receive()
+#         except ConnectionResetError:
+#             print("connection reset error, disconnecting")
+#             threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
+#     
     def receive(self):
         while(self.switch=="True"):
             #print("printing the receiver switch value")
