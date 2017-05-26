@@ -39,7 +39,7 @@ class EncryptionUI(Tk):
         
     def on_exit(self):
         try:
-            self.all_data.messenger.destroy()
+            self.all_data.messenger.quit()
         except AttributeError:
             print("no messenger to close")
         
@@ -58,6 +58,6 @@ class EncryptionUI(Tk):
             self.all_data.encrypt_socket.close()
         except AttributeError:
             print("no socket to close")
-        self.destroy()
+        self.quit()
         time.sleep(2)
         print(threading.enumerate())  
