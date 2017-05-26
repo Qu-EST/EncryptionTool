@@ -7,6 +7,7 @@ from threading import Thread, Lock
 from queue import Queue, Empty
 from QuEST.COM.Encryptor import Encryptor
 from twofish import Twofish
+import threading
 
 class ReceivedProcessor(Thread):
     '''
@@ -42,7 +43,7 @@ class ReceivedProcessor(Thread):
             except Empty: pass#print("queue timeout from receivevd processor")
             else:
                 if(bytedata==b''): 
-                    self.alldata.ui.setting_frame.disconnect.invoke()
+                    threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
                 
                 elif(self.alldata.encrypt_key==""):                
                     data=bytedata.decode('utf-8')
