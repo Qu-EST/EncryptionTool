@@ -8,6 +8,7 @@ from tkinter import Label
 from tkinter import Entry
 from tkinter import *
 from threading import Thread, Event
+import os
 from QuEST.TDC.TDCReader import TDCReader
 from QuEST.TDC.TDCReaderThread import TDCReaderThread
 from QuEST.COM.My_TCP import My_TCP
@@ -66,6 +67,7 @@ class ChangeButton(Button):
         
     def loadkey(self):    
         pass
+        os.chdir(r'C:\Users\QuEST02\Documents\EncryptionTool\QuestProject\QuEST')
         keyfile=open("Quantum_Keys.txt",'r')
         keylist=keyfile.readlines()
         index=1
