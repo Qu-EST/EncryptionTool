@@ -8,7 +8,7 @@ from tkinter import Label
 from tkinter import Entry
 from tkinter import *
 from threading import Thread, Event
-import os
+import os, threading
 from QuEST.TDC.TDCReader import TDCReader
 from QuEST.TDC.TDCReaderThread import TDCReaderThread
 from QuEST.COM.My_TCP import My_TCP
@@ -187,7 +187,11 @@ class ConnectButton(Button):
         self.encrypt_socket=My_TCP(ip=self.IP,port=5005,con_type=self.con_type).my_socket
         print("connected", self.encrypt_socket)
         self.alldata.encrypt_socket=self.encrypt_socket
-        self.receiver=Receiver_Thread(display_received=self.alldata.displayreceived, received=self.received_data,rcv_socket=self.encrypt_socket)
+        try:
+            self.receiver=Receiver_Thread(display_received=self.alldata.displayreceived, received=self.received_data,rcv_socket=self.encrypt_socket)
+        except ConnectionResetError:
+            print("connection reset. invoking the disconnect button")
+            threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
         self.receiver.start()
         self.alldata.receiver=self.receiver
         self.receivedprocessor=ReceivedProcessor(self.alldata)

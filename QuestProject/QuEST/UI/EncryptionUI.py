@@ -48,13 +48,16 @@ class EncryptionUI(Tk):
                 
                 #if(threads.)
                 print("closing the thread "+threads.name)
+                print(threads)
                 threads.off()
                 print(type(threads))
                 threads.join()
                 print(threads.is_alive())        
         print(threading.active_count())
-        
-        self.all_data.encrypt_socket.close()
+        try:
+            self.all_data.encrypt_socket.close()
+        except AttributeError:
+            print("no socket to close")
         self.destroy()
         time.sleep(2)
         print(threading.enumerate())  
