@@ -230,12 +230,13 @@ class DisconnectButton(Button):
         try:
             self.messenger.destroy()
         except AttributeError:
-            pass
+            pass 
+            print("no messenger now to destroy")
         try:
             self.alldata.sendprocessor.off()
         except AttributeError:
             print("no send processor present")
-        self.alldata.encrypt_socket.settimeout(1)
+        #self.alldata.encrypt_socket.settimeout(1)
         print("closing the receiver")
         self.alldata.receiver.off()        
         self.alldata.receiver.join()

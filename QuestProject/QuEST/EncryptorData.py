@@ -41,5 +41,6 @@ class EncrptorData(object):
         self.goodkey=""
         self.encrypt_key="74"
         self.encryptor=""
+        self.ui=""
         
         

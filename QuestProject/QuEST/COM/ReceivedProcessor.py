@@ -41,7 +41,10 @@ class ReceivedProcessor(Thread):
                 bytedata=self.received.get(timeout=1)
             except Empty: pass#print("queue timeout from receivevd processor")
             else:
-                if(self.alldata.encrypt_key==""):                
+                if(bytedata==b''): 
+                    self.alldata.ui.setting_frame.disconnect.invoke()
+                
+                elif(self.alldata.encrypt_key==""):                
                     data=bytedata.decode('utf-8')
                     print("Processing received data: "+data)
                     command=data.partition(" ")

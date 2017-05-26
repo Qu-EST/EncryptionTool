@@ -57,7 +57,7 @@ class SendFrame(Frame):
         self.key_label.grid(row=0,column=0,sticky=W)
         self.entry.grid(row=0,column=1,sticky=W)
         self.sendbutton.grid(row=0,column=2,sticky=W)
-        self.sendbutton.focus_set()
+        self.bind("<Return>", lambda x: self.send())
         self.alldata.encryptor=Encryptor(b'7774')
         
         

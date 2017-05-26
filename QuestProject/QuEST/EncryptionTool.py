@@ -9,6 +9,7 @@ from QuEST.UI.EncryptionUI import EncryptionUI
 from QuEST import EncryptorData
 all_data=EncryptorData.EncrptorData()
 ui=EncryptionUI(all_data)
+all_data.ui=ui
 ui.mainloop()
 
 

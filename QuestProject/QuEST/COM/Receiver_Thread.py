@@ -33,7 +33,7 @@ class Receiver_Thread(Thread):
     def receive(self):
         while(self.switch=="True"):
             #print("printing the receiver switch value")
-            print(self.switch)
+            #print(self.switch)
             pass
             #self.lock.acquire()
             try:
