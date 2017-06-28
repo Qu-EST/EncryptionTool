@@ -9,7 +9,7 @@ from queue import Queue
 from _overlapped import NULL
 from _socket import socket, timeout
 import time, threading
-from QuEST import EncryptorData
+from QuEST.EncryptorData import EncryptorData
 class Receiver_Thread(Thread):
     '''
     classdocs
