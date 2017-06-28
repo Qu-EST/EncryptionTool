@@ -231,6 +231,7 @@ class ConnectButton(Button):
         Button.__init__(self,master,text="Connect",command=self.connectthread.start,width=12)
         self.ui=master
         self.all_data=EncryptorData()
+        self.alldata=self.all_data
         self.receiver=self.all_data.receiver
         self.encrypt_socket=self.all_data.encrypt_socket
         self.received_data=self.all_data.received_data
