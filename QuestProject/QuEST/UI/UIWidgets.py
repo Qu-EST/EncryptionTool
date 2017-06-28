@@ -135,14 +135,14 @@ class StartButton(Button):
                     self.start_console()
             except AttributeError:
                 self.start_console()
-            def start_console(self):
-                print("no console present")
-                self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
-                self.displaygoodut=TextPadWriter(self.console.good_utime, self.all_data.good_ut)
-                self.display_ut.start() #start putting the data in the textpad
-                self.all_data.mt_console=self.display_ut
-                self.displaygoodut.start()
-                self.all_data.goodt_console=self.displaygoodut
+    def start_console(self):
+        print("no console present")
+        self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
+        self.displaygoodut=TextPadWriter(self.console.good_utime, self.all_data.good_ut)
+        self.display_ut.start() #start putting the data in the textpad
+        self.all_data.mt_console=self.display_ut
+        self.displaygoodut.start()
+        self.all_data.goodt_console=self.displaygoodut
 #         print(threading.active_count())
 #         print(threading.enumerate())
             
@@ -276,14 +276,14 @@ class ConnectButton(Button):
                 self.start_console()
         except AttributeError:    
             self.start_console()
-        def start_console(self):
-            self.displayersent=TextPadWriter(self.console.sent_data, self.alldata.displaysent)
-            self.displayerreceived=TextPadWriter(self.console.received_data, self.alldata.displayreceived)
-            self.displayersent.start()
-            self.displayerreceived.start()
-            self.all_data.sent_console=self.displayersent
-            self.all_data.received_console=self.displayerreceived
-        
+    def start_console(self):
+        self.displayersent=TextPadWriter(self.console.sent_data, self.alldata.displaysent)
+        self.displayerreceived=TextPadWriter(self.console.received_data, self.alldata.displayreceived)
+        self.displayersent.start()
+        self.displayerreceived.start()
+        self.all_data.sent_console=self.displayersent
+        self.all_data.received_console=self.displayerreceived
+    
         
 class DisconnectButton(Button):        
     def __init__(self,master):
