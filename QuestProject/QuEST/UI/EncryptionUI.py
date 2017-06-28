@@ -16,23 +16,23 @@ import threading
 import time
 from QuEST.COM.SendProcessor import SendProcessor
 from QuEST.UI.Messenger import Messenger
-
+from QuEST.EncryptorData import EncryptorData
 class EncryptionUI(Tk):
     '''
     classdocs
     '''
 
 
-    def __init__(self,all_data):
+    def __init__(self):
         '''
         Constructor
         '''
         Tk.__init__(self)
-        self.all_data=all_data
+        self.all_data=EncryptorData()
         self.title("QuEST Encryption tool")
         #self.console=""
-        self.console=TDCFrames.AllConsole(self,self.all_data)
-        self.setting_frame=TDCFrames.SettingsFrame(self,self.all_data)
+        self.console=TDCFrames.AllConsole(self)
+        self.setting_frame=TDCFrames.SettingsFrame(self)
         self.console.pack(side=BOTTOM)
         self.setting_frame.pack(side=TOP)
         self.protocol("WM_DELETE_WINDOW", self.on_exit)

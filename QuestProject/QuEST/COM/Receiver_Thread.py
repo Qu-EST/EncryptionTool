@@ -3,23 +3,25 @@ Created on Apr 1, 2017
 
 @author: jee11
 '''
+
 from threading import Thread, Lock
 from queue import Queue
 from _overlapped import NULL
 from _socket import socket, timeout
 import time, threading
+from QuEST import EncryptorData
 class Receiver_Thread(Thread):
     '''
     classdocs
     '''
     
 
-    def __init__(self,alldata,display_received=Queue(0),received=Queue(0),rcv_socket=socket,lock=Lock()):
+    def __init__(self,display_received=Queue(0),received=Queue(0),rcv_socket=socket,lock=Lock()):
         '''
         Constructor
         '''
         self.switch="True"
-        self.alldata=alldata
+        self.alldata=EncryptorData()
         self.received=received
         self.rcv_socket=rcv_socket
         rcv_socket.settimeout(1)

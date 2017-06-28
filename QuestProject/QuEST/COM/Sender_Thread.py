@@ -8,17 +8,18 @@ from threading import Lock
 from queue import Queue, Empty
 from _overlapped import NULL
 from _socket import socket
+from QuEST.EncryptorData import EncryptorData
 class Sender_Thread(Thread):
     '''
     classdocs
     '''
     
 
-    def __init__(self,alldata,display_sent=Queue(0),tosend=Queue(0),send_socket=socket,lock=Lock()):
+    def __init__(self,display_sent=Queue(0),tosend=Queue(0),send_socket=socket,lock=Lock()):
         '''
         Constructor
         '''
-        self.alldata=alldata
+        self.alldata=EncryptorData()
         self.sender_switch="True"
         self.send_socket=send_socket
         self.tosend=tosend

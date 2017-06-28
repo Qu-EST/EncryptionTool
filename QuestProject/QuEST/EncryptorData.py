@@ -4,12 +4,19 @@ Created on Apr 19, 2017
 @author: jee11
 '''
 from queue import Queue
-from _overlapped import NULL
-from QuEST.TDC.TDCReaderThread import TDCReaderThread
+#from QuEST.TDC.TDCReaderThread import TDCReaderThread
 
-class EncrptorData(object):
+class Singleton(type):
+    '''Metaclass for the singleton'''
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class EncryptorData(metaclass=Singleton):
     '''
-    classdocs
+    Data to be shared with all the encryptor modules
     '''
 
 
@@ -42,5 +49,11 @@ class EncrptorData(object):
         self.encrypt_key="74"
         self.encryptor=""
         self.ui=""
+        self.gpstime=""
+        self.gps_reader=""             #thread to read the gps time
+        self.mt_console=None
+        self.goodt_console=None
+        self.sent_console=None
+        self.received_console=None
         
         

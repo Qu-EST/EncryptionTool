@@ -5,6 +5,7 @@ Created on Apr 21, 2017
 '''
 from threading import Thread, Event
 from queue import Queue, Empty
+from QuEST.EncryptorData import EncryptorData
 class KeyHasher(Thread):
     
     '''
@@ -12,11 +13,13 @@ class KeyHasher(Thread):
     '''
 
 
-    def __init__(self, alldata ):
+    def __init__(self):
         '''
         Constructor
         '''
         Thread.__init__(self)
+        self.alldata=EncryptorData()
+        alldata=self.alldata
         self.goodut=alldata.good_ut
         self.hash_queue=alldata.hash_queue
         self.ut=alldata.ut

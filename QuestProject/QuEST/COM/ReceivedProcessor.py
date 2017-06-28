@@ -7,6 +7,7 @@ from threading import Thread, Lock
 from queue import Queue, Empty
 from QuEST.COM.Encryptor import Encryptor
 from twofish import Twofish
+from QuEST.EncryptorData import EncryptorData
 import threading
 
 class ReceivedProcessor(Thread):
@@ -15,21 +16,21 @@ class ReceivedProcessor(Thread):
     '''
 
 
-    def __init__(self, alldata, lock=Lock()):
+    def __init__(self, lock=Lock()):
         '''
         Constructor
         '''
         Thread.__init__(self)
-        self.received=alldata.received_data
+        self.alldata=EncryptorData()
+        self.received=self.alldata.received_data
         self.lock=lock
         self.key=alldata.key
-        self.goodkey=alldata.goodkey
-        self.send_queue=alldata.send_data
+        self.goodkey=self.alldata.goodkey
+        self.send_queue=self.alldata.send_data
         self.xor_switch="True"
-        self.message=alldata.displaymessage
+        self.message=self.alldata.displaymessage
         self.processor_switch=1
         #self.counter=0
-        self.alldata=alldata
         self.value1=0
         self.value2=0
         

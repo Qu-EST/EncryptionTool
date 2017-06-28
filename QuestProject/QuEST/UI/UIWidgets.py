@@ -20,6 +20,7 @@ from QuEST.COM.ReceivedProcessor import ReceivedProcessor
 from QuEST.COM.SendProcessor import SendProcessor
 from QuEST.TDC.KeyHasher import KeyHasher
 from QuEST.TDC.TestTimeProducer import TestTimeProducer
+from QuEST.EncryptorData import EncryptorData
 from queue import Empty
 class InputFrame(Frame):
     def __init__(self,master,label_text="label"):
@@ -41,7 +42,7 @@ class InputFrame(Frame):
                 return data
             elif (self.label_text=="Baud rate"):
                 #print("default baud rate 38400 chosen")
-                data=57600
+                data=115200
                 return data
         else: return data
     
@@ -57,12 +58,12 @@ class CheckBoxFrame(Frame):
         return self.value.get()
         
 class ChangeButton(Button):        
-    def __init__(self,master,console, all_data):
+    def __init__(self,master,console):
         Button.__init__(self,master,text="Load key",command=self.loadkey,width=12)
-        #self.config(state=DISABLED)
+        self.all_data=EncryptorData()
+        all_data=self.all_data
         self.tdc_reader=all_data.tdc_reader
         self.console=console
-        self.all_data=all_data
         self.hash_queue=all_data.hash_queue
         
     def loadkey(self):    
@@ -83,7 +84,7 @@ class ChangeButton(Button):
         print("Starting Unit Text")
         self.time_producer=TestTimeProducer(self.hash_queue)
         self.time_producer.start()
-        self.hasher=KeyHasher(self.all_data)
+        self.hasher=KeyHasher()
         self.hasher.start()
         self.all_data.hasher=self.hasher
         self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
@@ -93,21 +94,27 @@ class ChangeButton(Button):
         
         
 class StartButton(Button):        
-    def __init__(self, master, console, all_data):
-        Button.__init__(self, master, text="Start", command=self.start, width=12)
-        print(type(master))
+    def __init__(self, master, console, interface="tdc"):
+        
+        self.all_data=EncryptorData()
+        all_data=self.all_data
         self.ui=master
-        self.console=console
-        self.all_data=all_data
-        self.hash_queue=all_data.hash_queue
-        self.tdc_reader=all_data.tdc_reader
-        self.serial_reader=""
+        self.serial_reader=None
+        if(interface=="tdc"):
+            Button.__init__(self, master, text="Start", command=self.start, width=12)      
+            self.console=console            
+            self.hash_queue=all_data.hash_queue
+            self.tdc_reader=all_data.tdc_reader
+            
+        else:
+            Button.__init__(self, master, text="Start", command=self.startgps, width=12)
+            self.gps_reader=all_data.gps_reader
+        
     def start(self):
-        pass
         print("Starting to read from TDC")
         self.ui.stop_button.config(state=NORMAL)
         self.config(state=DISABLED)
-        if(str(type(self.serial_reader))=="<class 'str'>"):
+        if(self.serial_reader is None):
             print("initializing TDC")
             self.serial_reader=TDCReader() #initialize the serial reader
             port=self.ui.port_input.get_data()
@@ -115,29 +122,58 @@ class StartButton(Button):
             self.serial_reader.port=port #set the port number
             self.serial_reader.baudrate=self.ui.baud_input.get_data() #set the baudrate
         if(self.all_data.tdc_reader==""):
-            self.tdc_reader=TDCReaderThread(self.hash_queue,self.serial_reader) #initalize the reader thread
+            self.tdc_reader=TDCReaderThread(self.serial_reader,hash_queue = self.hash_queue) #initalize the reader thread
             self.tdc_reader.start() #start the thread
             self.all_data.tdc_reader=self.tdc_reader
-            self.hasher=KeyHasher(self.all_data)
+            self.hasher=KeyHasher()
             self.hasher.start()
             self.all_data.hasher=self.hasher
             #print("from start printing the type of tdc reader " + str(type(self.tdc_reader)))
             #print(type(self.all_data.tdc_reader))
-            self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
-            self.displaygoodut=TextPadWriter(self.console.good_utime, self.all_data.good_ut)
-            self.display_ut.start() #start putting the data in the textpad
-            self.displaygoodut.start()
+            try:
+                if not (self.all_data.mt_console.is_alive()):
+                    self.start_console()
+            except AttributeError:
+                self.start_console()
+            def start_console(self):
+                print("no console present")
+                self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
+                self.displaygoodut=TextPadWriter(self.console.good_utime, self.all_data.good_ut)
+                self.display_ut.start() #start putting the data in the textpad
+                self.all_data.mt_console=self.display_ut
+                self.displaygoodut.start()
+                self.all_data.goodt_console=self.displaygoodut
+#         print(threading.active_count())
+#         print(threading.enumerate())
             
-        
-class StopButton(Button):        
-    def __init__(self,master, alldata):
-        Button.__init__(self,master,text="Stop",command=self.stop,width=12)
-        self.serial_reader=alldata.tdc_reader
-        self.alldata=alldata
-        print(type(self.serial_reader))
-        self.saver=master.saver
+    def startgps(self):
+        print("Starting the GPS timer")
+        self.ui.gstop_button.config(state=NORMAL)
         self.config(state=DISABLED)
-        self.start_button=master.start_button
+        if(self.serial_reader is None):
+            self.serial_reader=TDCReader() #initialize the serial reader
+            port=self.ui.gport_input.get_data()
+            #print(port)
+            self.serial_reader.port=port #set the port number
+            self.serial_reader.baudrate=self.ui.baud_input.get_data()
+        if(self.all_data.gps_reader==""):
+            self.gps_reader=TDCReaderThread(self.serial_reader, interface="gps") #initalize the reader thread
+            self.gps_reader.start() #start the thread
+            self.all_data.gps_reader=self.gps_reader 
+               
+class StopButton(Button):        
+    def __init__(self,master, interface="tdc"):
+        if(interface=="tdc"):
+            Button.__init__(self,master,text="Stop",command=self.stop,width=12)
+            self.start_button=master.start_button
+            self.saver=master.saver            
+        else:
+            Button.__init__(self,master,text="Stop",command=self.stopgps,width=12)
+            self.start_button=master.gstart_button
+            
+        self.alldata=EncryptorData()        
+        self.config(state=DISABLED)
+        
     def stop(self):
         pass
         print("Stopping to read from TDC")
@@ -145,28 +181,60 @@ class StopButton(Button):
         self.config(state=DISABLED)
         self.start_button.config(state=NORMAL)
         print("inside stop button")
-        self.serial_reader=self.alldata.tdc_reader
-        print((str(type(self.serial_reader))=="<class 'str'>"))
-        if(~(str(type(self.serial_reader))=="<class 'str'>")): 
-            print(type(self.serial_reader))
-            if(self.serial_reader.is_alive()):
-                self.serial_reader.stop_reading()
-                self.serial_reader.join()
+        self.tdc_reader=self.alldata.tdc_reader
+        hasher=self.alldata.hasher
+        mt_console=self.alldata.mt_console
+        goodt_console=self.alldata.goodt_console
+        try: 
+            if(self.tdc_reader.is_alive()):
+                self.tdc_reader.off()
+                self.tdc_reader.join()
                 self.alldata.tdc_reader=""
-                
+        except AttributeError:
+            print("from the stop. the type of serial reader is not thread{}".format(type(self.serial_reader)))            
+        try: 
+            if(hasher.is_alive()):
+                hasher.off()
+                hasher.join()
+                self.alldata.hasher=None
+        except AttributeError:
+            print("from the stop. the type of hasher is not thread{}".format(type(hasher)))
+        try:
+            if(mt_console.is_alive()):
+                self.mt_console.off()
+                self.goodt_console.off()
+                self.mt_console.join()
+                self.goodt_console.join()
+        except AttributeError:
+            print("from stop. the console has no attributes")
+            
+            
+
+    def stopgps(self):
+        self.config(state=DISABLED)
+        self.start_button.config(state=NORMAL)
+        print("inside gps stop button")
+        self.tdc_reader=self.alldata.gps_reader
+        try: 
+            if(self.tdc_reader.is_alive()):
+                self.tdc_reader.off()
+                self.tdc_reader.join()
+                self.alldata.gps_reader=""
+        except AttributeError:
+            print("from the gps stop. the type of serial reader is not thread{}".format(type(self.tdc_reader)))            
             
         
 class ConnectButton(Button):        
-    def __init__(self,master,console,all_data):
+    def __init__(self,master,console):
         Button.__init__(self,master,text="Connect",command=self.connect,width=12)
         self.ui=master
-        self.alldata=all_data
-        self.receiver=all_data.receiver
-        self.encrypt_socket=all_data.encrypt_socket
-        self.received_data=all_data.received_data
-        self.sender=all_data.sender
-        self.receivedprocessor=all_data.receivedprocessor
-        self.send_data=all_data.send_data
+        self.all_data=EncryptorData()
+        self.receiver=self.all_data.receiver
+        self.encrypt_socket=self.all_data.encrypt_socket
+        self.received_data=self.all_data.received_data
+        self.sender=self.all_data.sender
+        self.receivedprocessor=self.all_data.receivedprocessor
+        self.send_data=self.all_data.send_data
         self.console=console
         
     def connect(self):
@@ -200,16 +268,24 @@ class ConnectButton(Button):
         self.sender=Sender_Thread(self.alldata,display_sent=self.alldata.displaysent,tosend=self.send_data,send_socket=self.encrypt_socket)
         self.sender.start()
         self.alldata.sender=self.sender
-        self.displayersent=TextPadWriter(self.console.sent_data, self.alldata.displaysent)
-        self.displayerreceived=TextPadWriter(self.console.received_data, self.alldata.displayreceived)
-        self.displayersent.start()
-        self.displayerreceived.start()
-        
+        try:
+            if not (self.all_data.sent_console.is_alive()):
+                self.start_console()
+        except AttributeError:    
+            self.start_console()
+        def start_console(self):
+            self.displayersent=TextPadWriter(self.console.sent_data, self.alldata.displaysent)
+            self.displayerreceived=TextPadWriter(self.console.received_data, self.alldata.displayreceived)
+            self.displayersent.start()
+            self.displayerreceived.start()
+            self.all_data.sent_console=self.displayersent
+            self.all_data.received_console=self.displayerreceived
         
         
 class DisconnectButton(Button):        
-    def __init__(self,master,all_data):
+    def __init__(self,master):
         Button.__init__(self,master,text="Disconnect",command=self.disconnect,width=12)
+        all_data=EncryptorData()
         self.alldata=all_data
         self.sockettoclose=all_data.encrypt_socket
         #self.sendprocessor=all_data.sendprocessor
@@ -261,8 +337,9 @@ class DisconnectButton(Button):
         
         
 class StartSendingButton(Button):        
-    def __init__(self,master,alldata):
+    def __init__(self,master):
         Button.__init__(self,master,text="Error Check",command=self.send,width=12)
+        alldata=EncryptorData()
         self.alldata=alldata
         self.sendprocessor=alldata.sendprocessor
         self.config(state=DISABLED)
@@ -275,8 +352,9 @@ class StartSendingButton(Button):
         
         
 class MessengerButton(Button):
-    def __init__(self,master, alldata):
+    def __init__(self,master):
         Button.__init__(self,master,text="Messenger",command=self.start_messenger,width=12)
+        alldata=EncryptorData()
         self.alldata=alldata
         self.messenger=alldata.messenger
         self.config(state=DISABLED)
@@ -287,8 +365,9 @@ class MessengerButton(Button):
         self.alldata.messenger=self.messenger
         self.messenger.mainloop()
 class SaveButton(Button):
-    def __init__(self,master, alldata):
+    def __init__(self,master):
         Button.__init__(self,master,text="Save",command=self.start_save,width=12)
+        alldata=EncryptorData()
         self.save_data=alldata.save_data
         self.config(state=DISABLED)
     def start_save(self):
@@ -319,10 +398,15 @@ class TextPadWriter(Thread):
         self.display()        
     
     def display(self):
+        linecount=lambda T: (int(T.index('end').split('.')[0])-1)
         #if(self.switch.is_set()): print("switch is set: before the while loop")
         while(self.switch.is_set()):
             #print(self.switch.is_set())
             #if(self.switch.is_set()): print("switch is set: inside the while loop")
+            #print(linecount(self.text_pad))
+            if(linecount(self.text_pad)>40):
+                print("exceeded 40 lines in console")
+                self.text_pad.delete("1.0","10.0")
             try:
                 data=self.data_queue.get(timeout=1)
                 self.data_queue.task_done()
