@@ -226,6 +226,8 @@ class StopButton(Button):
         
 class ConnectButton(Button):        
     def __init__(self,master,console):
+        self.connectthread=threading.Thread(target=self.connect)
+        self.connectthread.setDaemon(True)
         Button.__init__(self,master,text="Connect",command=self.connectthread.start,width=12)
         self.ui=master
         self.all_data=EncryptorData()
@@ -236,8 +238,7 @@ class ConnectButton(Button):
         self.receivedprocessor=self.all_data.receivedprocessor
         self.send_data=self.all_data.send_data
         self.console=console
-        self.connectthread=threading.Thread(target=self.connect)
-        self.connectthread.setDaemon(True)
+        
     def connect(self):
         self.disconnect=self.ui.disconnect
         self.communicate=self.ui.start_sending
