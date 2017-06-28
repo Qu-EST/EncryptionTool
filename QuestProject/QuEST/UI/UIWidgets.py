@@ -259,7 +259,7 @@ class ConnectButton(Button):
         print("connected", self.encrypt_socket)
         self.alldata.encrypt_socket=self.encrypt_socket
         #try:
-        self.receiver=Receiver_Thread(self.alldata, display_received=self.alldata.displayreceived, received=self.received_data,rcv_socket=self.encrypt_socket)
+        self.receiver=Receiver_Thread(display_received=self.alldata.displayreceived, received=self.received_data,rcv_socket=self.encrypt_socket)
 #         except ConnectionResetError:
 #             print("connection reset. invoking the disconnect button")
 #             threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
@@ -268,7 +268,7 @@ class ConnectButton(Button):
         self.receivedprocessor=ReceivedProcessor(self.alldata)
         self.receivedprocessor.start()
         self.alldata.receivedprocessor=self.receivedprocessor
-        self.sender=Sender_Thread(self.alldata,display_sent=self.alldata.displaysent,tosend=self.send_data,send_socket=self.encrypt_socket)
+        self.sender=Sender_Thread(display_sent=self.alldata.displaysent,tosend=self.send_data,send_socket=self.encrypt_socket)
         self.sender.start()
         self.alldata.sender=self.sender
         try:
