@@ -24,7 +24,7 @@ class ReceivedProcessor(Thread):
         self.alldata=EncryptorData()
         self.received=self.alldata.received_data
         self.lock=lock
-        self.key=alldata.key
+        self.key=self.alldata.key
         self.goodkey=self.alldata.goodkey
         self.send_queue=self.alldata.send_data
         self.xor_switch="True"
