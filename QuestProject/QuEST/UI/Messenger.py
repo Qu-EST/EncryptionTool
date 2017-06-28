@@ -4,7 +4,8 @@ Created on Apr 21, 2017
 @author: jee11
 '''
 from tkinter import Tk, Text, Frame, Entry, Button, Label
-from tkinter.constants import TOP, LEFT, RIGHT, END, BOTTOM, DISABLED, CENTER, W
+from tkinter.constants import TOP, LEFT, RIGHT, END, BOTTOM, DISABLED, CENTER, W,\
+    NORMAL
 from QuEST.UI import UIWidgets
 from threading import Thread, Lock
 from queue import Queue
@@ -34,7 +35,11 @@ class Messenger(Tk):
         self.display=DisplayThread(self.messagepad,self.displaymessage)
         self.display.start()
         #self.sendframe.bind("<Return>", lambda x: self.sendframe.send())
-        
+    
+    def on_exit(self):
+        pass
+        self.alldata.messenger=""
+        self.alldata.ui.setting_frame.messenger.config(state=NORMAL)    
         
     def setkey(self):
         self.sendframe.setkeylabel()    
@@ -61,6 +66,7 @@ class SendFrame(Frame):
         self.entry.focus()
         self.entry.bind("<Return>", lambda x: self.send())
         self.alldata.encryptor=Encryptor(b'7774')
+    
         
         
     def send(self):

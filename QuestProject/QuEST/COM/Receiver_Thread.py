@@ -49,20 +49,26 @@ class Receiver_Thread(Thread):
             except ConnectionResetError:
                 print("connection reset error, disconnecting")
                 threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
+            except OSError as e:
+                print("From received processor. got the error:{} hence disconnecting".format(e))
+                threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
             else:
                 print(b'recieved: '+ bytedata)
-                try:
-                    stringdata=bytedata.decode('utf-8')
-                except:
-                    pass
-                    stringdata=bytedata
-                finally:
-                    pass
-                #print("Received: "+stringdata)
-                self.received.put(bytedata)
-                self.display_received.put(stringdata)
-                #self.lock.release()
-                #time.sleep(0.25)
+                if(bytedata==b''): 
+                    threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
+                else:
+                    try:
+                        stringdata=bytedata.decode('utf-8')
+                    except:
+                        pass
+                        stringdata=bytedata
+                    finally:
+                        pass
+                    #print("Received: "+stringdata)
+                    self.received.put(bytedata)
+                    self.display_received.put(stringdata)
+                    #self.lock.release()
+                    #time.sleep(0.25)
     
     def off(self):
         print("offing the receiver thread")

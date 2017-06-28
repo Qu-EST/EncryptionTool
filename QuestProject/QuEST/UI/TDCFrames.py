@@ -70,6 +70,8 @@ class SettingsFrame(Frame):
         
         self.start_sending.grid(row=5,column=2,sticky=W)
         self.messenger.grid(row=6,column=2,sticky=W)
+        
+        
 class AllConsole(Frame):
     def __init__(self,master):
         Frame.__init__(self,master)

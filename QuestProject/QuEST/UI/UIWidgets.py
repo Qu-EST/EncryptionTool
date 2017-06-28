@@ -112,8 +112,7 @@ class StartButton(Button):
         
     def start(self):
         print("Starting to read from TDC")
-        self.ui.stop_button.config(state=NORMAL)
-        self.config(state=DISABLED)
+        
         if(self.serial_reader is None):
             print("initializing TDC")
             self.serial_reader=TDCReader() #initialize the serial reader
@@ -135,6 +134,8 @@ class StartButton(Button):
                     self.start_console()
             except AttributeError:
                 self.start_console()
+        self.ui.stop_button.config(state=NORMAL)
+        self.config(state=DISABLED)
     def start_console(self):
         print("no console present")
         self.display_ut=TextPadWriter(self.console.micro_time, self.all_data.ut) #initialize the thread to put the data in the textpad
@@ -148,8 +149,8 @@ class StartButton(Button):
             
     def startgps(self):
         print("Starting the GPS timer")
-        self.ui.gstop_button.config(state=NORMAL)
-        self.config(state=DISABLED)
+        
+        
         if(self.serial_reader is None):
             self.serial_reader=TDCReader() #initialize the serial reader
             port=self.ui.gport_input.get_data()
@@ -160,7 +161,8 @@ class StartButton(Button):
             self.gps_reader=TDCReaderThread(self.serial_reader, interface="gps") #initalize the reader thread
             self.gps_reader.start() #start the thread
             self.all_data.gps_reader=self.gps_reader 
-               
+        self.ui.gstop_button.config(state=NORMAL)
+        self.config(state=DISABLED)       
 class StopButton(Button):        
     def __init__(self,master, interface="tdc"):
         if(interface=="tdc"):
@@ -177,9 +179,7 @@ class StopButton(Button):
     def stop(self):
         pass
         print("Stopping to read from TDC")
-        self.saver.config(state=NORMAL)
-        self.config(state=DISABLED)
-        self.start_button.config(state=NORMAL)
+        
         print("inside stop button")
         self.tdc_reader=self.alldata.tdc_reader
         hasher=self.alldata.hasher
@@ -207,11 +207,13 @@ class StopButton(Button):
                 self.goodt_console.join()
         except AttributeError:
             print("from stop. the console has no attributes")
-            
+        self.saver.config(state=NORMAL)
+        self.config(state=DISABLED)
+        self.start_button.config(state=NORMAL)    
             
 
     def stopgps(self):
-        self.config(state=DISABLED)
+        
         self.start_button.config(state=NORMAL)
         print("inside gps stop button")
         self.tdc_reader=self.alldata.gps_reader
@@ -222,7 +224,7 @@ class StopButton(Button):
                 self.alldata.gps_reader=""
         except AttributeError:
             print("from the gps stop. the type of serial reader is not thread{}".format(type(self.tdc_reader)))            
-            
+        self.config(state=DISABLED)    
         
 class ConnectButton(Button):        
     def __init__(self,master,console):
@@ -247,10 +249,7 @@ class ConnectButton(Button):
         self.disconnect=self.ui.disconnect
         self.communicate=self.ui.start_sending
         self.messenger_button=self.ui.messenger
-        self.config(state=DISABLED)
-        self.disconnect.config(state=NORMAL)
-        self.communicate.config(state=NORMAL)
-        self.messenger_button.config(state=NORMAL)
+        
         print("Connecting to the server/client")
         self.IP=self.ui.IP_input.get_data()
         self.if_server=self.ui.if_server.getvalue()
@@ -279,6 +278,12 @@ class ConnectButton(Button):
                 self.start_console()
         except AttributeError:    
             self.start_console()
+            
+        self.config(state=DISABLED)
+        self.disconnect.config(state=NORMAL)
+        self.communicate.config(state=NORMAL)
+        self.messenger_button.config(state=NORMAL)
+        
     def start_console(self):
         self.displayersent=TextPadWriter(self.console.sent_data, self.alldata.displaysent)
         self.displayerreceived=TextPadWriter(self.console.received_data, self.alldata.displayreceived)
@@ -312,10 +317,7 @@ class DisconnectButton(Button):
         self.communicate=self.master.start_sending
         self.messenger_button=self.master.messenger
         print("disConnecting to the server/client")
-        self.connect.config(state=NORMAL)
-        self.config(state=DISABLED)
-        self.communicate.config(state=DISABLED)
-        self.messenger_button.config(state=DISABLED)
+        
         try:
             print("Trying to close the Messenger")
             self.alldata.messenger.destroy()
@@ -323,6 +325,9 @@ class DisconnectButton(Button):
         except AttributeError:
             pass 
             print("no messenger now to destroy")
+        except TclError:
+            pass
+            print("messenger already closed")
         try:
             self.alldata.sendprocessor.off()
         except AttributeError:
@@ -341,6 +346,10 @@ class DisconnectButton(Button):
         
         self.alldata.encrypt_socket.close()
         print("socket closed")
+        self.connect.config(state=NORMAL)
+        self.config(state=DISABLED)
+        self.communicate.config(state=DISABLED)
+        self.messenger_button.config(state=DISABLED)
         #print(threading.enumerate())
         
         
@@ -372,6 +381,7 @@ class MessengerButton(Button):
         self.messenger=Messenger(self.alldata)
         self.alldata.messenger=self.messenger
         self.messenger.mainloop()
+        self.config(state=DISABLED)
 class SaveButton(Button):
     def __init__(self,master):
         Button.__init__(self,master,text="Save",command=self.start_save,width=12)
