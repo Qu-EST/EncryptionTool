@@ -68,7 +68,7 @@ class ChangeButton(Button):
         
     def loadkey(self):    
         pass
-        os.chdir(r'C:\Users\QuEST02\Documents\EncryptionTool\QuestProject\QuEST')
+        os.chdir(r'C:\Users\jee11\Documents\new_28-4\EncryptionTool\QuestProject\QuEST')
         keyfile=open("Quantum_Keys.txt",'r')
         keylist=keyfile.readlines()
         index=1
@@ -226,9 +226,7 @@ class StopButton(Button):
         
 class ConnectButton(Button):        
     def __init__(self,master,console):
-        self.connectthread=threading.Thread(target=self.connect)
-        self.connectthread.setDaemon(True)
-        Button.__init__(self,master,text="Connect",command=self.connectthread.start,width=12)
+        Button.__init__(self,master,text="Connect",command=self.connectthread,width=12)
         self.ui=master
         self.all_data=EncryptorData()
         self.alldata=self.all_data
@@ -239,8 +237,13 @@ class ConnectButton(Button):
         self.receivedprocessor=self.all_data.receivedprocessor
         self.send_data=self.all_data.send_data
         self.console=console
+    def connectthread(self):
+        conT=threading.Thread(target=self.connect)
+        conT.setDaemon(True)
+        conT.start()
         
     def connect(self):
+        #print("this is wereh the objects of connect belong{}".format(type(self)))
         self.disconnect=self.ui.disconnect
         self.communicate=self.ui.start_sending
         self.messenger_button=self.ui.messenger
@@ -299,6 +302,7 @@ class DisconnectButton(Button):
         self.config(state=DISABLED)
         self.master=master
         
+        
         # to make all queues empty here
         
         
@@ -337,6 +341,7 @@ class DisconnectButton(Button):
         
         self.alldata.encrypt_socket.close()
         print("socket closed")
+        #print(threading.enumerate())
         
         
 class StartSendingButton(Button):        
