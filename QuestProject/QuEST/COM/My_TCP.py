@@ -39,6 +39,7 @@ class My_TCP():
             #print("starting to listen from thread")
             #accept_thread.start()
             print("connected")
+            self.serversocket.close()
         
     @staticmethod
     def socket_getter(ip="127.0.0.1",port=5005,con_type="client"):
