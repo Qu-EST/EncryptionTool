@@ -328,6 +328,7 @@ class DisconnectButton(Button):
         
         #self.send_thread=all_data.
     def disconnect(self):
+        print("inside the disconnect")
         self.connect=self.master.connect
         self.communicate=self.master.start_sending
         self.messenger_button=self.master.messenger

@@ -13,6 +13,7 @@ import time
 from QuEST.COM.Encryptor import Encryptor
 from twofish import Twofish
 import random
+from QuEST.EncryptorData import EncryptorData
 class Messenger(Tk):
     '''
     classdocs
@@ -34,12 +35,12 @@ class Messenger(Tk):
         self.sendframe.pack(side=BOTTOM)
         self.display=DisplayThread(self.messagepad,self.displaymessage)
         self.display.start()
-        self.protocol("WM_DELETE_WINDOW", self.on_exit())
+        self.protocol("WM_DELETE_WINDOW", self.on_exit)
         self.alldata=alldata
         #self.sendframe.bind("<Return>", lambda x: self.sendframe.send())
     
     def on_exit(self):
-        pass
+        self.alldata=EncryptorData()
         self.alldata.messenger=""
         self.alldata.ui.setting_frame.messenger.config(state=NORMAL)
         self.destroy()    

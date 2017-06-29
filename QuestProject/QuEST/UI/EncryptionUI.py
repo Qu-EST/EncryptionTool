@@ -38,12 +38,19 @@ class EncryptionUI(Tk):
         self.protocol("WM_DELETE_WINDOW", self.on_exit)
         
     def on_exit(self):
-        
+        print("on exit")
         try:
+            print("checking if the sender is alive")
             if(self.all_data.sender.is_alive()):
-                disconnT=threading.Thread(target=self.all_data.ui.setting_frame.disconnect.invoke)
-                disconnT.start()
-                disconnT.join()
+                self.setting_frame.disconnect.invoke()
+#                 print("sender is alive. disconnecting the connection before exit")
+# #                 disconnT=threading.Thread(target=self.setting_frame.disconnect.invoke).start().join()
+# #                 time.sleep(2)
+#                 print("thread object created")
+# #                 disconnT.start()
+#                 print("disconnect thread statred")
+# #                 disconnT.join()
+#                 print("the connection is disconencted.")
             else: print("no connection to disconnect")
         except AttributeError as e:
             print("no connection to disconnect")
@@ -54,17 +61,22 @@ class EncryptionUI(Tk):
 #         except AttributeError:
 #             print("no messenger to close")
 #         
-        
+        print("closing the threads")
         for threads in threading.enumerate():
             if(not((threads.name=='MainThread') or threads.isDaemon())):
                 
                 #if(threads.)
                 print("closing the thread "+threads.name)
                 print(threads)
-                threads.off()
-                print(type(threads))
-                threads.join()
-                print(threads.is_alive())        
+                try:
+                    threads.off()
+                    print(type(threads))
+                    print(threads.is_alive())
+                    threads.join()
+                except AttributeError as e:
+                    print("the thread: {} does not have off. hence skipping to close it.".format(threads.name))
+                
+                        
         print(threading.active_count())
         try:
             self.all_data.encrypt_socket.close()
@@ -72,4 +84,5 @@ class EncryptionUI(Tk):
             print("no socket to close")
         self.quit()
 #         time.sleep(2)
-        print(threading.enumerate())  
+        print(threading.enumerate())
+        self.quit()  
