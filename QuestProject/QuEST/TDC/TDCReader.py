@@ -15,6 +15,7 @@ Operations:
 @author: jee11
 '''
 from serial import Serial
+import serial
 class TDCReader(Serial):
     def __init__(self,port="COM3",baudrate=38400):
         '''constructor
@@ -31,9 +32,17 @@ class TDCReader(Serial):
         self.port=port
        
     def start_TDC(self):
-        self.open() 
+        self.open()
         print(self.is_open)
         print(self)
+        
+#         try:
+#              
+#         except serial.serialutil.SerialException as e:
+#             print("no port with the following error exist. error:{}".format(e))
+#         else:
+#             print(self.is_open)
+#             print(self)
         
     def stop_TDC(self):
         self.close()

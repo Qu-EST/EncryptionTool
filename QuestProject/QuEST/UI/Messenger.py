@@ -34,12 +34,14 @@ class Messenger(Tk):
         self.sendframe.pack(side=BOTTOM)
         self.display=DisplayThread(self.messagepad,self.displaymessage)
         self.display.start()
+        self.protocol("WM_DELETE_WINDOW", self.on_exit())
         #self.sendframe.bind("<Return>", lambda x: self.sendframe.send())
     
     def on_exit(self):
         pass
         self.alldata.messenger=""
-        self.alldata.ui.setting_frame.messenger.config(state=NORMAL)    
+        self.alldata.ui.setting_frame.messenger.config(state=NORMAL)
+        self.destroy()    
         
     def setkey(self):
         self.sendframe.setkeylabel()    

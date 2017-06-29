@@ -51,7 +51,7 @@ class Receiver_Thread(Thread):
                 threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
             except OSError as e:
                 print("From received processor. got the error:{} hence disconnecting".format(e))
-                threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
+                #threading.Thread(target=self.alldata.ui.setting_frame.disconnect.invoke).start()
             else:
                 print(b'recieved: '+ bytedata)
                 if(bytedata==b''): 

@@ -40,6 +40,7 @@ class SettingsFrame(Frame):
         self.gbaud_input=UIWidgets.InputFrame(self,label_text="Baud rate")
         self.gchange_button=UIWidgets.ChangeButton(self,master.console)
         self.gstart_button=UIWidgets.StartButton(self,master.console,interface="gps")
+        self.gstart_button.config(state=DISABLED)
         #self.saver=UIWidgets.SaveButton(self)
         self.gstop_button=UIWidgets.StopButton(self,interface="gps")
         

@@ -113,13 +113,13 @@ class StartButton(Button):
     def start(self):
         print("Starting to read from TDC")
         
-        if(self.serial_reader is None):
-            print("initializing TDC")
-            self.serial_reader=TDCReader() #initialize the serial reader
-            port=self.ui.port_input.get_data()
-            #print(port)
-            self.serial_reader.port=port #set the port number
-            self.serial_reader.baudrate=self.ui.baud_input.get_data() #set the baudrate
+#         if(self.serial_reader is None):
+        print("initializing TDC")
+        self.serial_reader=TDCReader() #initialize the serial reader
+        port=self.ui.port_input.get_data()
+        print("from start button. port:{}".format(port))
+        self.serial_reader.port=port #set the port number
+        self.serial_reader.baudrate=self.ui.baud_input.get_data() #set the baudrate
         if(self.all_data.tdc_reader==""):
             self.tdc_reader=TDCReaderThread(self.serial_reader,hash_queue = self.hash_queue) #initalize the reader thread
             self.tdc_reader.start() #start the thread
@@ -239,10 +239,24 @@ class ConnectButton(Button):
         self.receivedprocessor=self.all_data.receivedprocessor
         self.send_data=self.all_data.send_data
         self.console=console
+        self.conT=None
+        
+    def start_conT(self):    
+        print("starting the conneting thread")
+        self.conT=threading.Thread(target=self.connect)
+        self.conT.setDaemon(True)
+        self.conT.start()
+        
     def connectthread(self):
-        conT=threading.Thread(target=self.connect)
-        conT.setDaemon(True)
-        conT.start()
+        try:
+            if self.conT.is_alive():
+                print("already connecting. please wait")
+            else:
+                self.start_conT()
+        except AttributeError as E:
+            #print("starting the co")
+            self.start_conT()
+    
         
     def connect(self):
         #print("this is wereh the objects of connect belong{}".format(type(self)))
@@ -283,6 +297,7 @@ class ConnectButton(Button):
         self.disconnect.config(state=NORMAL)
         #self.communicate.config(state=NORMAL)
         self.messenger_button.config(state=NORMAL)
+        threading.Thread(target=self.all_data.ui.setting_frame.change_button.invoke).start()
         
     def start_console(self):
         self.displayersent=TextPadWriter(self.console.sent_data, self.alldata.displaysent)
@@ -334,18 +349,24 @@ class DisconnectButton(Button):
             print("no send processor present")
         #self.alldata.encrypt_socket.settimeout(1)
         print("closing the receiver")
-        self.alldata.receiver.off()        
-        self.alldata.receiver.join()
-        print("receiver closed/n closing the received processor")
-        self.alldata.receivedprocessor.off()
-        self.alldata.receivedprocessor.join()
-        print("reciever processor closed/n closig the sender")
-        self.alldata.sender.off()
-        self.alldata.sender.join()
-        print("Sender closed\n closing the socket")
+        try:
+            self.alldata.receiver.off()
+            self.alldata.receiver.join()
+            self.alldata.recever=""
+            print("receiver closed/n closing the received processor")
+            self.alldata.receivedprocessor.off()
+            self.alldata.receivedprocessor.join()
+            self.alldata.receivedprocessor=""
+            print("reciever processor closed/n closig the sender")
+            self.alldata.sender.off()
+            self.alldata.sender.join()
+            self.alldata.sender=""
+            print("Sender closed\n closing the socket")
+            self.alldata.encrypt_socket.close()
+            print("socket closed")
         
-        self.alldata.encrypt_socket.close()
-        print("socket closed")
+        except AttributeError as e:
+            print("from disconnect button. No connection to disconnect")        
         self.connect.config(state=NORMAL)
         self.config(state=DISABLED)
         self.communicate.config(state=DISABLED)

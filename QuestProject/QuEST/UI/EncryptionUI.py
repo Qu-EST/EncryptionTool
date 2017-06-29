@@ -38,10 +38,22 @@ class EncryptionUI(Tk):
         self.protocol("WM_DELETE_WINDOW", self.on_exit)
         
     def on_exit(self):
+        
         try:
-            self.all_data.messenger.quit()
-        except AttributeError:
-            print("no messenger to close")
+            if(self.all_data.sender.is_alive()):
+                disconnT=threading.Thread(target=self.all_data.ui.setting_frame.disconnect.invoke)
+                disconnT.start()
+                disconnT.join()
+            else: print("no connection to disconnect")
+        except AttributeError as e:
+            print("no connection to disconnect")
+        
+#         
+#         try:
+#             self.all_data.messenger.quit()
+#         except AttributeError:
+#             print("no messenger to close")
+#         
         
         for threads in threading.enumerate():
             if(not((threads.name=='MainThread') or threads.isDaemon())):
@@ -59,5 +71,5 @@ class EncryptionUI(Tk):
         except AttributeError:
             print("no socket to close")
         self.quit()
-        time.sleep(2)
+#         time.sleep(2)
         print(threading.enumerate())  
