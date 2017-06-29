@@ -35,7 +35,7 @@ class Messenger(Tk):
         self.display=DisplayThread(self.messagepad,self.displaymessage)
         self.display.start()
         self.protocol("WM_DELETE_WINDOW", self.on_exit())
-        sekf,alldata=alldata
+        sekf.alldata=alldata
         #self.sendframe.bind("<Return>", lambda x: self.sendframe.send())
     
     def on_exit(self):
