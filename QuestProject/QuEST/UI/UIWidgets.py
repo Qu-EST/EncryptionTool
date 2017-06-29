@@ -281,7 +281,7 @@ class ConnectButton(Button):
             
         self.config(state=DISABLED)
         self.disconnect.config(state=NORMAL)
-        self.communicate.config(state=NORMAL)
+        #self.communicate.config(state=NORMAL)
         self.messenger_button.config(state=NORMAL)
         
     def start_console(self):
@@ -378,10 +378,11 @@ class MessengerButton(Button):
     def start_messenger(self):
         pass
         print("Starting the messenger")
+        self.config(state=DISABLED)
         self.messenger=Messenger(self.alldata)
         self.alldata.messenger=self.messenger
         self.messenger.mainloop()
-        self.config(state=DISABLED)
+        
 class SaveButton(Button):
     def __init__(self,master):
         Button.__init__(self,master,text="Save",command=self.start_save,width=12)
