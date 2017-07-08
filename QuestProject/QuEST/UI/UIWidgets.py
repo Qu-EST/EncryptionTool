@@ -38,7 +38,7 @@ class InputFrame(Frame):
         if (data==''):
             if(self.label_text=="Port No"):
                 #print("default port COM3 chosen")
-                data="COM6"
+                data="COM5"
                 return data
             elif (self.label_text=="Baud rate"):
                 #print("default baud rate 38400 chosen")
@@ -68,7 +68,7 @@ class ChangeButton(Button):
         
     def loadkey(self):    
         pass
-        os.chdir(r'C:\Users\jee11\Documents\new_28-4\EncryptionTool\QuestProject\QuEST')
+        os.chdir(r'C:\Users\QuEST02\Documents\EncryptionTool\QuestProject\QuEST')
         keyfile=open("Quantum_Keys.txt",'r')
         keylist=keyfile.readlines()
         index=1
@@ -156,7 +156,8 @@ class StartButton(Button):
             port=self.ui.gport_input.get_data()
             #print(port)
             self.serial_reader.port=port #set the port number
-            self.serial_reader.baudrate=self.ui.baud_input.get_data()
+            baud=self.ui.gbaud_input.get_data()
+            self.serial_reader.baudrate=baud
         if(self.all_data.gps_reader==""):
             self.gps_reader=TDCReaderThread(self.serial_reader, interface="gps") #initalize the reader thread
             self.gps_reader.start() #start the thread
@@ -446,7 +447,7 @@ class TextPadWriter(Thread):
             #if(self.switch.is_set()): print("switch is set: inside the while loop")
             #print(linecount(self.text_pad))
             if(linecount(self.text_pad)>40):
-                print("exceeded 40 lines in console")
+#                 print("exceeded 40 lines in console")
                 self.text_pad.delete("1.0","10.0")
             try:
                 data=self.data_queue.get(timeout=1)

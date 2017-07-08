@@ -40,7 +40,7 @@ class SettingsFrame(Frame):
         self.gbaud_input=UIWidgets.InputFrame(self,label_text="Baud rate")
         self.gchange_button=UIWidgets.ChangeButton(self,master.console)
         self.gstart_button=UIWidgets.StartButton(self,master.console,interface="gps")
-        self.gstart_button.config(state=DISABLED)
+#         self.gstart_button.config(state=DISABLED)
         #self.saver=UIWidgets.SaveButton(self)
         self.gstop_button=UIWidgets.StopButton(self,interface="gps")
         
@@ -48,7 +48,7 @@ class SettingsFrame(Frame):
         self.GPS_part.grid(row=0, column=1, sticky=W)
         self.gport_input.grid(row=1,column=1, sticky=W)
         self.gbaud_input.grid(row=2,column=1,sticky=W)
-        self.gbaud_input.entry.config(state=DISABLED)   #Disabling the baud input temporarily
+        #self.gbaud_input.entry.config(state=DISABLED)   #Disabling the baud input temporarily
         #self.change_button.grid(row=3,column=1,sticky=W)
         self.gstart_button.grid(row=4,column=1,sticky=W)
         self.gstop_button.grid(row=5,column=1,sticky=W)

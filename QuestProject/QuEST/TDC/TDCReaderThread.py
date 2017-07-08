@@ -9,6 +9,7 @@ import datetime
 from queue import Queue
 from QuEST.EncryptorData import EncryptorData
 import win32api
+from test.test_logging import pywintypes
 
 class TDCReaderThread(Thread):
     '''
@@ -34,6 +35,7 @@ class TDCReaderThread(Thread):
         if(self.interface=="tdc"):
             self.start_reading()
         else:
+            print("reading time")
             self.read_time()
         
     def read_time(self):    
@@ -41,23 +43,37 @@ class TDCReaderThread(Thread):
         
         while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
-            #print(type(byte_data))
-            gpsdata=byte_data.decode('utf-8')
-            if(gpsdata[0:6]=="$GPZDA"):
-                timestamp=gpsdata[7:28]
-                self.alldata.gpstime=timestamp
-                hour=timestamp[7:9]
-                min=timestamp[9:11]
-                sec=timestamp[11:13]
-                mmm=timestamp[14:17]
-                day=timestamp[18:20]
-                month=timestamp[21:23]
-                year=timestamp[24:28]
-                time_tuple=(year,month,day,hour,min,sec,mmm)
-                dayOfWeek = datetime.datetime(time_tuple).isocalendar()[2]
-                win32api.SetSystemTime( time_tuple[:2] + (dayOfWeek,) + time_tuple[2:])
-                
-                #print(timestamp)
+            print(byte_data)
+            try:
+                self.gpsdata=byte_data.decode('utf-8')
+            except UnicodeDecodeError as e:
+                print("unicode decode error from the gps reader: {}".format(e))
+            else:
+                gpsdata=self.gpsdata
+                if(gpsdata[0:6]=="$GPZDA"):
+                    timestamp=gpsdata[7:28]
+                    self.alldata.gpstime=timestamp
+                    try:
+                        hour=int(gpsdata[7:9])
+                        min=int(gpsdata[9:11])
+                        sec=int(gpsdata[11:13])
+                        mmm=int(gpsdata[14:17])
+                        day=int(gpsdata[18:20])
+                        month=int(gpsdata[21:23])
+                        year=int(gpsdata[24:28])
+    #                     time_str=(year+month+day+hour+min+sec+mmm)
+                        
+                        dayOfWeek = datetime.datetime(year,month, day, hour=hour,minute=min,second=sec, microsecond=mmm).isocalendar()[2]
+                    except ValueError as e:
+                        print("error while decodng the time from GPS {}".format(e))
+                    else:
+                        try:    
+                            win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
+                            print("time changed to {}".format(timestamp))
+                        except pywintypes.error as e:
+                            print("error while setting the time in the system: {}".format(e))
+                    
+                    #print(timestamp)
             
         print("closing the com port")
         self.tdc_reader.stop_TDC()

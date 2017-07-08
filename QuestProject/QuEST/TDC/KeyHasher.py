@@ -27,7 +27,7 @@ class KeyHasher(Thread):
         self.hashed_key=alldata.key
         self.save_data=alldata.save_data
         self.counter=0
-        self.FORCESTOP=83
+        self.FORCESTOP=86
         self.alldata=alldata
         self.switch=Event()
         self.switch.set()
@@ -44,6 +44,8 @@ class KeyHasher(Thread):
                 self.hash_queue.task_done()
             except Empty:
                 print("no data in the hash queue")
+            except ValueError as e:
+                print("got error while converting the value{}".format(e))
             
             else:
                 if(self.value>0):
