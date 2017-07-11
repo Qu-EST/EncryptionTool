@@ -29,6 +29,7 @@ class TDCReaderThread(Thread):
         self.tdc_reader.start_TDC()
         self.interface=interface
         self.alldata=EncryptorData()
+        self.now=datetime.datetime.now()
         #self.counter=0
         
     def run(self):
@@ -40,6 +41,7 @@ class TDCReaderThread(Thread):
         
     def read_time(self):    
         print("reading the GPS time")
+        now=self.now
         
         while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
@@ -50,17 +52,17 @@ class TDCReaderThread(Thread):
                 print("unicode decode error from the gps reader: {}".format(e))
             else:
                 gpsdata=self.gpsdata
-                if(gpsdata[0:6]=="$GPZDA"):
-                    timestamp=gpsdata[7:28]
+                if(gpsdata[0:6]=="$GPGGA"):
+                    timestamp=gpsdata[7:17]
                     self.alldata.gpstime=timestamp
                     try:
                         hour=int(gpsdata[7:9])
                         min=int(gpsdata[9:11])
                         sec=int(gpsdata[11:13])
                         mmm=int(gpsdata[14:17])
-                        day=int(gpsdata[18:20])
-                        month=int(gpsdata[21:23])
-                        year=int(gpsdata[24:28])
+                        day=now.day
+                        month=now.month
+                        year=now.year
     #                     time_str=(year+month+day+hour+min+sec+mmm)
                         
                         dayOfWeek = datetime.datetime(year,month, day, hour=hour,minute=min,second=sec, microsecond=mmm).isocalendar()[2]
