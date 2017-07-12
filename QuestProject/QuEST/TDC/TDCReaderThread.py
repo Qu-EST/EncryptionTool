@@ -10,6 +10,7 @@ from queue import Queue
 from QuEST.EncryptorData import EncryptorData
 import win32api
 from test.test_logging import pywintypes
+import time
 
 class TDCReaderThread(Thread):
     '''
@@ -84,10 +85,11 @@ class TDCReaderThread(Thread):
         while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             string_data=byte_data.decode('utf-8')
-            #macrotime=datetime.date.strftime(datetime.datetime.now(),'%m:%d_%H:%M:%S:%f')
-            #data=macrotime+" "+string_data
+            string_data=string_data.zfill(5)
+            macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
+            data=macrotime+','+string_data[:3]+','+string_data[3:]
             #print(data)
-            self.hash_queue.put(string_data)
+            self.hash_queue.put(data)
             #self.hash_queue.task_done()
         print("closing the com port")
         self.tdc_reader.stop_TDC()

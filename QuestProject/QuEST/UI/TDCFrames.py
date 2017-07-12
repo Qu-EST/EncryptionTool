@@ -30,6 +30,7 @@ class SettingsFrame(Frame):
         self.start_button.grid(row=4,column=0,sticky=W)
         self.stop_button.grid(row=5,column=0,sticky=W)
         self.saver.grid(row=6,column=0,sticky=W)
+        self.saver.config(state=DISABLED)
         
         #GPS Settings
         

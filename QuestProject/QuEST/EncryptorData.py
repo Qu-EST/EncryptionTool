@@ -55,5 +55,6 @@ class EncryptorData(metaclass=Singleton):
         self.goodt_console=None
         self.sent_console=None
         self.received_console=None
+        self.file_name=None         #to save file name
         
         

@@ -208,7 +208,7 @@ class StopButton(Button):
                 self.goodt_console.join()
         except AttributeError:
             print("from stop. the console has no attributes")
-        self.saver.config(state=NORMAL)
+#         self.saver.config(state=NORMAL)
         self.config(state=DISABLED)
         self.start_button.config(state=NORMAL)    
             
