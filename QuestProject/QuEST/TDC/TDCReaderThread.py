@@ -38,13 +38,14 @@ class TDCReaderThread(Thread):
             self.start_reading()
         else:
             print("reading time")
+            self.counter=0
             self.read_time()
         
     def read_time(self):    
         print("reading the GPS time")
         now=self.now
         
-        while(self.tdc_switch.is_set()):
+        while(self.counter>5):
             byte_data=self.tdc_reader.readline()
             print(byte_data)
             try:
@@ -73,6 +74,8 @@ class TDCReaderThread(Thread):
                         try:    
                             win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
                             print("time changed to {}".format(timestamp))
+                            print("updated time: {}".format(self.counter))
+                            self.counter=self.counter+1
                         except pywintypes.error as e:
                             print("error while setting the time in the system: {}".format(e))
                     
