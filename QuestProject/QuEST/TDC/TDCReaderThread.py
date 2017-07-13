@@ -85,7 +85,9 @@ class TDCReaderThread(Thread):
         while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             string_data=byte_data.decode('utf-8')
-            string_data=string_data.zfill(5)
+#             string_data=string_data.zfill(5)
+            while(len(string_data<5)):
+                string_data='0'+string_data
             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
             data=macrotime+','+string_data[:3]+','+string_data[3:]
             #print(data)
