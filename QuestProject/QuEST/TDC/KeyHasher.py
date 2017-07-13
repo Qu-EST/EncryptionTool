@@ -65,8 +65,8 @@ class KeyHasher(Thread):
 #                 
 #                 self.data=str(self.counter) +" "+ str(self.value)
                 self.ut.put(self.value)
-                self.datafile.write(self.value)
-#                 self.datafile.write('/n')
+                self.datafile.write(self.value+'\n')
+#                 self.datafile.write(r'\n')
 #                 self.save_data.put(self.data)
 #                 if((self.value>0) and (self.value<self.FORCESTOP)):
 #                     self.goodut.put(self.data)
