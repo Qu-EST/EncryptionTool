@@ -45,7 +45,7 @@ class TDCReaderThread(Thread):
         print("reading the GPS time")
         now=self.now
         
-        while(self.counter>5):
+        while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             print(byte_data)
             try:
@@ -56,7 +56,7 @@ class TDCReaderThread(Thread):
                 gpsdata=self.gpsdata
                 if(gpsdata[0:6]=="$GPGGA"):
                     timestamp=gpsdata[7:17]
-                    self.alldata.gpstime=timestamp
+#                     self.alldata.gpstime=timestamp
                     try:
                         hour=int(gpsdata[7:9])
                         min=int(gpsdata[9:11])
@@ -65,20 +65,24 @@ class TDCReaderThread(Thread):
                         day=now.day
                         month=now.month
                         year=now.year
+                        tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
+                        self.alldata.gpstime=tempstamp
     #                     time_str=(year+month+day+hour+min+sec+mmm)
                         
                         dayOfWeek = datetime.datetime(year,month, day, hour=hour,minute=min,second=sec, microsecond=mmm).isocalendar()[2]
                     except ValueError as e:
                         print("error while decodng the time from GPS {}".format(e))
                     else:
-                        try:    
-                            win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
-                            print("time changed to {}".format(timestamp))
-                            print("updated time: {}".format(self.counter))
-                            self.counter=self.counter+1
-                        except pywintypes.error as e:
-                            print("error while setting the time in the system: {}".format(e))
-                    
+                        tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
+                        self.alldata.gpstime=tempstamp
+#                         try:    
+#                             win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
+#                             print("time changed to {}".format(timestamp))
+#                             print("updated time: {}".format(self.counter))
+#                             self.counter=self.counter+1
+#                         except pywintypes.error as e:
+#                             print("error while setting the time in the system: {}".format(e))
+#                     
                     #print(timestamp)
             
         print("closing the com port")
@@ -90,8 +94,9 @@ class TDCReaderThread(Thread):
             string_data=byte_data.decode('utf-8')          
             string_data=string_data.rstrip()
             string_data=string_data.zfill(5)
-            macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
-            data=macrotime+','+string_data[:3]+','+string_data[3:]
+#             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
+#             data=macrotime+','+string_data[:3]+','+string_data[3:]
+            data=self.alldata.gpstime+","+string_data
             #print(data)
             self.hash_queue.put(data)
             #self.hash_queue.task_done()
