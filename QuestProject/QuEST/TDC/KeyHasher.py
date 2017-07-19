@@ -72,6 +72,8 @@ class KeyHasher(Thread):
 #                     self.goodut.put(self.data)
  
         self.datafile.close()
+        self.alldata.filename=None
+        self.filename=None
         print("exiting the hasher thread")
                     
     def decompose(self,data_string):

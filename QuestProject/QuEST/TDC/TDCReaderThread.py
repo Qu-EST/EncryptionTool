@@ -44,7 +44,8 @@ class TDCReaderThread(Thread):
     def read_time(self):    
         print("reading the GPS time")
         now=self.now
-        
+        filename=datetime.date.strftime(datetime.datetime.now(),'%m-%d_%H-%M-%S')+"timer_log.txt"
+        datafile=open(filename, "a+")
         while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             print(byte_data)
@@ -84,8 +85,8 @@ class TDCReaderThread(Thread):
                             # datafile.write("time changed to {}".format(timestamp)) 
 
                             # print("updated time: {}".format(self.counter)) 
-#                            self.counter=self.counter+1 
-
+                            # self.counter=self.counter+1 
+                           
                         except pywintypes.error as e:
                             print("error while setting the time in the system: {}".format(e))
                     
@@ -93,6 +94,7 @@ class TDCReaderThread(Thread):
             
         print("closing the com port")
         self.tdc_reader.stop_TDC()
+        datafile.close()
         print(self.tdc_reader)    
     def start_reading(self):
         while(self.tdc_switch.is_set()):
