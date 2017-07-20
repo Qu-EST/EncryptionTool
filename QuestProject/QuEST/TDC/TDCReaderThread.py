@@ -26,7 +26,7 @@ class TDCReaderThread(Thread):
         self.hash_queue=hash_queue
         self.tdc_reader=tdc_reader
         self.tdc_switch=Event()
-        self.tdc_switch.set()
+        self.tdc_switch.clear()
         self.tdc_reader.start_TDC()
         self.interface=interface
         self.alldata=EncryptorData()
@@ -48,7 +48,7 @@ class TDCReaderThread(Thread):
         # datafile=open(filename, "a+")
 
 
-        while(self.tdc_switch.is_set()):
+        while(not self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             # print(byte_data)
             try:
@@ -76,10 +76,10 @@ class TDCReaderThread(Thread):
                     else:
                         try:    
                             tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
-                            self.alldata.gpstime_lock.acquire()
-                            # print("acquired lock")
-                            self.alldata.gpstime=tempstamp
-                            self.alldata.gpstime_lock.release()
+                            with self.alldata.gpstime_condi:
+                                 print("acquired lock")
+                                 self.alldata.gpstime=tempstamp
+                                 self.alldata.gpstime_condi.notify()
                             self.alldata.good_ut.put(tempstamp)
                             # print("lock released")
                             # win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
@@ -103,18 +103,18 @@ class TDCReaderThread(Thread):
         # datafile.close()
         print(self.tdc_reader)    
     def start_reading(self):
-        while(self.tdc_switch.is_set()):
+        while(not self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             string_data=byte_data.decode('utf-8')          
             string_data=string_data.rstrip()
             string_data=string_data.zfill(5)
 #             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
 #             data=macrotime+','+string_data[:3]+','+string_data[3:]
-            print("waiting to acquire the gpstime")
-            self.alldata.gpstime_lock.acquire()
-            print("acquired the gps time")
-            gpstime=self.alldata.gpstime
-            self.alldata.gpstime_lock.release()
+            # print("waiting to acquire the gpstime")
+            with self.alldata.gpstime_condi:
+                self.alldata.gpstime_condi.wait_for(self.tdc_switch.is_set)
+                print("acquired the gps time")
+                gpstime=self.alldata.gpstime
             data=gpstime+","+string_data[:3]+","+string_data[3:]
             #print(data)
             self.hash_queue.put(data)
@@ -127,5 +127,5 @@ class TDCReaderThread(Thread):
                         
     def off(self):
         print("inside tdc reader off")
-        self.tdc_switch.clear()
+        self.tdc_switch.set()
         #print(self.tdc_reader)        
