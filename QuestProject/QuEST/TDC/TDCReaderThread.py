@@ -69,7 +69,9 @@ class TDCReaderThread(Thread):
                         month=now.month
                         year=now.year
                         tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
+                        self.alldata.gpstime_lock.acquire()
                         self.alldata.gpstime=tempstamp
+                        self.alldata.gpstime_lock.release()
     #                     time_str=(year+month+day+hour+min+sec+mmm)
                         
                         dayOfWeek = datetime.datetime(year,month, day, hour=hour,minute=min,second=sec, microsecond=mmm).isocalendar()[2]
@@ -97,7 +99,7 @@ class TDCReaderThread(Thread):
             
         print("closing the com port")
         self.tdc_reader.stop_TDC()
-        datafile.close()
+        # datafile.close()
         print(self.tdc_reader)    
     def start_reading(self):
         while(self.tdc_switch.is_set()):
@@ -107,7 +109,10 @@ class TDCReaderThread(Thread):
             string_data=string_data.zfill(5)
 #             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
 #             data=macrotime+','+string_data[:3]+','+string_data[3:]
-            data=self.alldata.gpstime+","+string_data[:3]+","+string_data[3:]
+            self.alldata.gpstime_lock.acquire()
+            gpstime=self.alldata.gpstime
+            self.alldata.gpstime_lock.release()
+            data=gpstime+","+string_data[:3]+","+string_data[3:]
             #print(data)
             self.hash_queue.put(data)
             #self.hash_queue.task_done()
@@ -120,5 +125,4 @@ class TDCReaderThread(Thread):
     def off(self):
         print("inside tdc reader off")
         self.tdc_switch.clear()
-        #print(self.tdc_reader)
-        
+        #print(self.tdc_reader)        

@@ -5,7 +5,7 @@ Created on Apr 19, 2017
 '''
 from queue import Queue
 #from QuEST.TDC.TDCReaderThread import TDCReaderThread
-
+from threading import RLock
 class Singleton(type):
     '''Metaclass for the singleton'''
     _instances = {}
@@ -56,5 +56,4 @@ class EncryptorData(metaclass=Singleton):
         self.sent_console=None
         self.received_console=None
         self.filename=None         #to save file name
-        
-        
+        self.gpstime_lock=RLock()  # lock for accessing the gps time
