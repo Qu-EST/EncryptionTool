@@ -96,7 +96,7 @@ class TDCReaderThread(Thread):
             string_data=string_data.zfill(5)
 #             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
 #             data=macrotime+','+string_data[:3]+','+string_data[3:]
-            data=self.alldata.gpstime+","+string_data
+            data=self.alldata.gpstime+","+string_data[:3]+","+string_data[3:]
             #print(data)
             self.hash_queue.put(data)
             #self.hash_queue.task_done()
