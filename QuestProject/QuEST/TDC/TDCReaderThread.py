@@ -44,8 +44,10 @@ class TDCReaderThread(Thread):
     def read_time(self):    
         print("reading the GPS time")
         now=self.now
-        filename=datetime.date.strftime(datetime.datetime.now(),'%m-%d_%H-%M-%S')+"timer_log.txt"
-        datafile=open(filename, "a+")
+        # filename=datetime.date.strftime(datetime.datetime.now(),'%m-%d_%H-%M-%S')+"timer_log.txt"
+        # datafile=open(filename, "a+")
+
+
         while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             print(byte_data)
@@ -66,6 +68,8 @@ class TDCReaderThread(Thread):
                         day=now.day
                         month=now.month
                         year=now.year
+                        tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
+                        self.alldata.gpstime=tempstamp
     #                     time_str=(year+month+day+hour+min+sec+mmm)
                         
                         dayOfWeek = datetime.datetime(year,month, day, hour=hour,minute=min,second=sec, microsecond=mmm).isocalendar()[2]
@@ -89,7 +93,6 @@ class TDCReaderThread(Thread):
                            
                         except pywintypes.error as e:
                             print("error while setting the time in the system: {}".format(e))
-                    
                     #print(timestamp)
             
         print("closing the com port")
@@ -102,8 +105,9 @@ class TDCReaderThread(Thread):
             string_data=byte_data.decode('utf-8')          
             string_data=string_data.rstrip()
             string_data=string_data.zfill(5)
-            macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
-            data=macrotime+','+string_data[:3]+','+string_data[3:]
+#             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
+#             data=macrotime+','+string_data[:3]+','+string_data[3:]
+            data=self.alldata.gpstime+","+string_data[:3]+","+string_data[3:]
             #print(data)
             self.hash_queue.put(data)
             #self.hash_queue.task_done()
