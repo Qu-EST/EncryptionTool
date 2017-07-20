@@ -80,7 +80,7 @@ class AllConsole(Frame):
         all_data=EncryptorData()
         self.all_data=all_data
         self.micro_time=UIWidgets.ConsoleFrame(self, console_name="micro time")
-        self.good_utime=UIWidgets.ConsoleFrame(self, console_name="good micro time")
+        self.good_utime=UIWidgets.ConsoleFrame(self, console_name="gps time changed to")
         self.sent_data=UIWidgets.ConsoleFrame(self, console_name="data Sent")
         self.received_data=UIWidgets.ConsoleFrame(self, console_name="data Received")
         self.micro_time.grid(row=0,column=0,sticky=W)

@@ -50,7 +50,7 @@ class TDCReaderThread(Thread):
 
         while(self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
-            print(byte_data)
+            # print(byte_data)
             try:
                 self.gpsdata=byte_data.decode('utf-8')
             except UnicodeDecodeError as e:
@@ -68,10 +68,6 @@ class TDCReaderThread(Thread):
                         day=now.day
                         month=now.month
                         year=now.year
-                        tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
-                        self.alldata.gpstime_lock.acquire()
-                        self.alldata.gpstime=tempstamp
-                        self.alldata.gpstime_lock.release()
     #                     time_str=(year+month+day+hour+min+sec+mmm)
                         
                         dayOfWeek = datetime.datetime(year,month, day, hour=hour,minute=min,second=sec, microsecond=mmm).isocalendar()[2]
@@ -80,7 +76,12 @@ class TDCReaderThread(Thread):
                     else:
                         try:    
                             tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
+                            self.alldata.gpstime_lock.acquire()
+                            # print("acquired lock")
                             self.alldata.gpstime=tempstamp
+                            self.alldata.gpstime_lock.release()
+                            self.alldata.good_ut.put(tempstamp)
+                            # print("lock released")
                             # win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
                             # print("time changed to {}".format(timestamp))
 
@@ -109,7 +110,9 @@ class TDCReaderThread(Thread):
             string_data=string_data.zfill(5)
 #             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
 #             data=macrotime+','+string_data[:3]+','+string_data[3:]
+            print("waiting to acquire the gpstime")
             self.alldata.gpstime_lock.acquire()
+            print("acquired the gps time")
             gpstime=self.alldata.gpstime
             self.alldata.gpstime_lock.release()
             data=gpstime+","+string_data[:3]+","+string_data[3:]

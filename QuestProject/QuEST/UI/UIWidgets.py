@@ -161,7 +161,12 @@ class StartButton(Button):
         if(self.all_data.gps_reader==""):
             self.gps_reader=TDCReaderThread(self.serial_reader, interface="gps") #initalize the reader thread
             self.gps_reader.start() #start the thread
-            self.all_data.gps_reader=self.gps_reader 
+            self.all_data.gps_reader=self.gps_reader
+        try:
+            if not (self.all_data.mt_console.is_alive()):
+                self.start_console()
+        except AttributeError:
+            self.start_console()
         self.ui.gstop_button.config(state=NORMAL)
         self.config(state=DISABLED)       
 class StopButton(Button):        
