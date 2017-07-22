@@ -99,10 +99,10 @@ class StartButton(Button):
         self.all_data=EncryptorData()
         all_data=self.all_data
         self.ui=master
+        self.console=console            
         self.serial_reader=None
         if(interface=="tdc"):
             Button.__init__(self, master, text="Start", command=self.start, width=12)      
-            self.console=console            
             self.hash_queue=all_data.hash_queue
             self.tdc_reader=all_data.tdc_reader
             

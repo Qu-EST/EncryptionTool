@@ -11,7 +11,7 @@ from QuEST.EncryptorData import EncryptorData
 import win32api
 from test.test_logging import pywintypes
 import time
-
+from queue import LifoQueue
 class TDCReaderThread(Thread):
     '''
     classdocs
@@ -76,10 +76,14 @@ class TDCReaderThread(Thread):
                     else:
                         try:    
                             tempstamp="{},{},{},{}".format(hour,min,sec,mmm)
-                            with self.alldata.gpstime_condi:
-                                 print("acquired lock")
-                                 self.alldata.gpstime=tempstamp
-                                 self.alldata.gpstime_condi.notify()
+                            # CODE FOR THE GPS TIME WITH CONDITION
+                            # with self.alldata.gpstime_condi:
+                            #      # print("acquired lock")
+                            #      self.alldata.gpstime=tempstamp
+                            #      # self.alldata.gpstime_condi.notify()
+
+                            # CODE FOR THE GPS WITH LIFO QUEUE
+                            self.alldata.gpsqueue.put(tempstamp)
                             self.alldata.good_ut.put(tempstamp)
                             # print("lock released")
                             # win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
@@ -103,6 +107,7 @@ class TDCReaderThread(Thread):
         # datafile.close()
         print(self.tdc_reader)    
     def start_reading(self):
+        oldgps=0
         while(not self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
             string_data=byte_data.decode('utf-8')          
@@ -110,11 +115,20 @@ class TDCReaderThread(Thread):
             string_data=string_data.zfill(5)
 #             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
 #             data=macrotime+','+string_data[:3]+','+string_data[3:]
-            # print("waiting to acquire the gpstime")
-            with self.alldata.gpstime_condi:
-                self.alldata.gpstime_condi.wait_for(self.tdc_switch.is_set)
-                print("acquired the gps time")
-                gpstime=self.alldata.gpstime
+            print("waiting to acquire the gpstime")
+            # CODE FOR GPS TIME WITH CONDITION
+            # with self.alldata.gpstime_condi:
+            #    # self.alldata.gpstime_condi.wait_for(self.tdc_switch.is_set)
+            #     print("acquired the gps time")
+            #     gpstime=self.alldata.gpstime
+
+            # CODE FOR THE GPS WITH LIFO QUEUE
+            if(self.alldata.gpsqueue.empty()):
+                gpstime=oldgps
+            else:
+                gpstime=self.alldata.gpsqueue.get()
+                self.alldata.gpsqueue=LifoQueue(0)
+                oldtime=gpstime
             data=gpstime+","+string_data[:3]+","+string_data[3:]
             #print(data)
             self.hash_queue.put(data)

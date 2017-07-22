@@ -4,6 +4,7 @@ Created on Apr 19, 2017
 @author: jee11
 '''
 from queue import Queue
+from queue import LifoQueue
 #from QuEST.TDC.TDCReaderThread import TDCReaderThread
 from threading import RLock
 from threading import Condition
@@ -59,3 +60,4 @@ class EncryptorData(metaclass=Singleton):
         self.filename=None         #to save file name
         self.gpstime_lock=RLock()  # lock for accessing the gps time
         self.gpstime_condi=Condition(lock=self.gpstime_lock) # condition for accessing the gps time
+        self.gpsqueue=LifoQueue(0)                           # lifo queue for transfering the gps time

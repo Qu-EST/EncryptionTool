@@ -49,7 +49,8 @@ class KeyHasher(Thread):
                 self.value=self.hash_queue.get(timeout=1)
                 self.hash_queue.task_done()
             except Empty:
-                print("no data in the hash queue")
+                pass
+                # print("no data in the hash queue")
             except ValueError as e:
                 print("got error while converting the value{}".format(e))
             
