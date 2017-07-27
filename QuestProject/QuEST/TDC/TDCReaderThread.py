@@ -83,6 +83,7 @@ class TDCReaderThread(Thread):
                             #      # self.alldata.gpstime_condi.notify()
 
                             # CODE FOR THE GPS WITH LIFO QUEUE
+                            self.alldata.gpsqueue=LifoQueue(0)
                             self.alldata.gpsqueue.put(tempstamp)
                             self.alldata.good_ut.put(tempstamp)
                             # print("lock released")
@@ -127,9 +128,11 @@ class TDCReaderThread(Thread):
                 gpstime=oldgps
             else:
                 gpstime=self.alldata.gpsqueue.get()
-                self.alldata.gpsqueue=LifoQueue(0)
+                #self.alldata.gpsqueue=LifoQueue(0)
                 oldtime=gpstime
-            data=gpstime+","+string_data[:3]+","+string_data[3:]
+            #try:    
+            data=str(gpstime)+","+str(string_data[:3])+","+str(string_data[3:])
+           # except TypeError as e: print(e) print(type)
             #print(data)
             self.hash_queue.put(data)
             #self.hash_queue.task_done()
