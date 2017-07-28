@@ -12,6 +12,7 @@ import win32api
 from test.test_logging import pywintypes
 import time
 from queue import LifoQueue
+from conda._vendor.auxlib._vendor.five import string
 class TDCReaderThread(Thread):
     '''
     classdocs
@@ -31,14 +32,14 @@ class TDCReaderThread(Thread):
         self.interface=interface
         self.alldata=EncryptorData()
         self.now=datetime.datetime.now()
-        #self.counter=0
+        self.counter=0
         
     def run(self):
         if(self.interface=="tdc"):
             self.start_reading()
         else:
             print("reading time")
-            self.counter=0
+#             self.counter=0
             self.read_time()
         
     def read_time(self):    
@@ -53,6 +54,7 @@ class TDCReaderThread(Thread):
             # print(byte_data)
             try:
                 self.gpsdata=byte_data.decode('utf-8')
+                
             except UnicodeDecodeError as e:
                 print("unicode decode error from the gps reader: {}".format(e))
             else:
@@ -113,10 +115,19 @@ class TDCReaderThread(Thread):
             byte_data=self.tdc_reader.readline()
             string_data=byte_data.decode('utf-8')          
             string_data=string_data.rstrip()
-            string_data=string_data.zfill(5)
+            try:
+                value=int(float(string_data))
+            except ValueError as e: 
+                print(e) 
+                value =0
+            if(value>0):
+                self.counter=self.counter+1
+            else:
+                self.counter=0
+#             string_data=string_data.zfill(5)
 #             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
 #             data=macrotime+','+string_data[:3]+','+string_data[3:]
-            print("waiting to acquire the gpstime")
+            #print("waiting to acquire the gpstime")
             # CODE FOR GPS TIME WITH CONDITION
             # with self.alldata.gpstime_condi:
             #    # self.alldata.gpstime_condi.wait_for(self.tdc_switch.is_set)
@@ -129,9 +140,10 @@ class TDCReaderThread(Thread):
             else:
                 gpstime=self.alldata.gpsqueue.get()
                 #self.alldata.gpsqueue=LifoQueue(0)
-                oldtime=gpstime
+                oldgps=gpstime
             #try:    
-            data=str(gpstime)+","+str(string_data[:3])+","+str(string_data[3:])
+#             data=str(gpstime)+","+str(string_data[:3])+","+str(string_data[3:])
+            data="{},{},{}".format(self.counter, gpstime, string_data)
            # except TypeError as e: print(e) print(type)
             #print(data)
             self.hash_queue.put(data)
