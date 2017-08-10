@@ -12,7 +12,7 @@ import win32api
 from test.test_logging import pywintypes
 import time
 from queue import LifoQueue
-from conda._vendor.auxlib._vendor.five import string
+# from conda._vendor.auxlib._vendor.five import string
 class TDCReaderThread(Thread):
     '''
     classdocs
@@ -85,8 +85,8 @@ class TDCReaderThread(Thread):
                             #      # self.alldata.gpstime_condi.notify()
 
                             # CODE FOR THE GPS WITH LIFO QUEUE
-                            self.alldata.gpsqueue=LifoQueue(0)
-                            self.alldata.gpsqueue.put(tempstamp)
+#                             self.alldata.gpsqueue=LifoQueue(0)
+#                             self.alldata.gpsqueue.put(tempstamp)
                             self.alldata.good_ut.put(tempstamp)
                             # print("lock released")
                             # win32api.SetSystemTime( year,month,dayOfWeek, day, hour, min, sec, mmm )
@@ -134,16 +134,16 @@ class TDCReaderThread(Thread):
             #     print("acquired the gps time")
             #     gpstime=self.alldata.gpstime
 
-            # CODE FOR THE GPS WITH LIFO QUEUE
-            if(self.alldata.gpsqueue.empty()):
-                gpstime=oldgps
-            else:
-                gpstime=self.alldata.gpsqueue.get()
-                #self.alldata.gpsqueue=LifoQueue(0)
-                oldgps=gpstime
+#             # CODE FOR THE GPS WITH LIFO QUEUE
+#             if(self.alldata.gpsqueue.empty()):
+#                 gpstime=oldgps
+#             else:
+#                 gpstime=self.alldata.gpsqueue.get()
+#                 #self.alldata.gpsqueue=LifoQueue(0)
+#                 oldgps=gpstime
             #try:    
 #             data=str(gpstime)+","+str(string_data[:3])+","+str(string_data[3:])
-            data="{},{},{}".format(self.counter, gpstime, string_data)
+            data="{},{}".format(self.counter, string_data)
            # except TypeError as e: print(e) print(type)
             #print(data)
             self.hash_queue.put(data)
