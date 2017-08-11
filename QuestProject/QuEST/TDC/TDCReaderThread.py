@@ -113,8 +113,10 @@ class TDCReaderThread(Thread):
         oldgps=0
         while(not self.tdc_switch.is_set()):
             byte_data=self.tdc_reader.readline()
+            comp_time=time.perf_counter()
             string_data=byte_data.decode('utf-8')          
             string_data=string_data.rstrip()
+            
             try:
                 value=int(float(string_data))
             except ValueError as e: 
@@ -124,6 +126,7 @@ class TDCReaderThread(Thread):
                 self.counter=self.counter+1
             else:
                 self.counter=0
+#            string_data="{},{}".format(time.perf_counter(),string_data)
 #             string_data=string_data.zfill(5)
 #             macrotime=datetime.date.strftime(datetime.datetime.now(),'%m,%d,%H,%M,%S,%f')
 #             data=macrotime+','+string_data[:3]+','+string_data[3:]
@@ -135,15 +138,17 @@ class TDCReaderThread(Thread):
             #     gpstime=self.alldata.gpstime
 
 #             # CODE FOR THE GPS WITH LIFO QUEUE
-#             if(self.alldata.gpsqueue.empty()):
-#                 gpstime=oldgps
-#             else:
-#                 gpstime=self.alldata.gpsqueue.get()
-#                 #self.alldata.gpsqueue=LifoQueue(0)
-#                 oldgps=gpstime
+            if(self.alldata.gpsqueue.empty()):
+                gpstime=oldgps
+            else:
+                gpstime=self.alldata.gpsqueue.get()
+                #self.alldata.gpsqueue=LifoQueue(0)
+                oldgps=gpstime
             #try:    
 #             data=str(gpstime)+","+str(string_data[:3])+","+str(string_data[3:])
-            data="{},{}".format(self.counter, string_data)
+
+            data="{},{},{},{}".format(self.counter, gpstime, comp_time, string_data)
+
            # except TypeError as e: print(e) print(type)
             #print(data)
             self.hash_queue.put(data)
